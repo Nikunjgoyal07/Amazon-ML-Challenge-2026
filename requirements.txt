@@ -1,0 +1,13 @@
+# Validated on Python 3.13 (local) — see notebook 01_eda_preprocessing.ipynb.
+# Install: pip install -r requirements.txt && python -m ipykernel install --user --name=python3
+polars==1.44.1
+pyarrow==23.0.1
+pandas==2.3.3
+rapidfuzz==3.14.5
+anyascii==0.3.3
+pyyaml==6.0.3
+nbformat==5.10.4
+nbconvert==7.17.1
+ipykernel==7.3.0
+# Stage 2 (blocking/matching, not needed for notebook 01):
+# lightgbm, sentence-transformers, faiss-gpu
