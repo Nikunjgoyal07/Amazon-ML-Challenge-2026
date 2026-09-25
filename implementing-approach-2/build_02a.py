@@ -36,7 +36,7 @@ for c in C.COUNTRIES_TRAIN:
     s1 = load_frame(C.PROC / f"train_s1_{c}.parquet").head(DEMO_S1)
     s2 = load_frame(C.PROC / f"train_s2_{c}.parquet")
     s3 = load_frame(C.PROC / f"train_s3_{c}.parquet")
-    fit = s1["core_name"].to_list()  # planner: fit TF-IDF on train names
+    fit = None if (len(s2) + len(s3)) > 500000 else s1["core_name"].to_list()
     union, parts = block_country(s1, s2, s3, topk=20, ngrams=C.TFIDF_NGRAMS,
                                  fit_names=fit, return_parts=True)
     union.write_parquet(str(C.OUT / f"candidates_{c}.parquet"))
@@ -67,6 +67,9 @@ for c in C.COUNTRIES_TRAIN:
 c04 = nbf.v4.new_code_cell(r"""# ---- Per-pass recall ablation (which pass earns its keep?) ----
 from metrics import blocking_recall
 for c in C.COUNTRIES_TRAIN:
+    if PARTS[c] is None:
+        print("==", c, "parts unavailable (sharded full-pool run) — ablation skipped")
+        continue
     s1ids = set(CANDS[c]["s1"].to_list())
     print("==", c)
     for k, df in PARTS[c].items():

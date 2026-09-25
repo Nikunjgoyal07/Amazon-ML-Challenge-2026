@@ -82,10 +82,38 @@ def union_blocks(dfs):
     return pl.concat(normed, how="diagonal").group_by(["s1", "mid"]).max()
 
 
-def block_country(s1, s2, s3, topk=15, ngrams=(2, 5), fit_names=None, return_parts=False):
+def block_country(s1, s2, s3, topk=15, ngrams=(2, 5), fit_names=None, return_parts=False,
+                  auto_shard_at=500000, pool_shard=1000000, s1_chunk=200000,
+                  fit_sample=500000):
     """Full multi-pass blocking for one country (s2+s3 pooled). Passes: exact name_norm,
-    exact core_name, exact phonetic_code, address keys, TF-IDF on core_name AND name_norm."""
+    exact core_name, exact phonetic_code, address keys, TF-IDF on core_name AND name_norm.
+    Pools larger than auto_shard_at spill transparently through block_country_sharded
+    (exact for global top-K); then return_parts comes back None."""
+    import os
+    import shutil
+    import tempfile
     cd = pl.concat([s2, s3], how="diagonal")
+    if len(cd) > auto_shard_at:
+        tmpdir = tempfile.mkdtemp(prefix="blk_")
+        try:
+            s1p = os.path.join(tmpdir, "s1.parquet")
+            s2p = os.path.join(tmpdir, "s2.parquet")
+            s3p = os.path.join(tmpdir, "s3.parquet")
+            outp = os.path.join(tmpdir, "union.parquet")
+            s1.write_parquet(s1p)
+            s2.write_parquet(s2p)
+            s3.write_parquet(s3p)
+            block_country_sharded(s1p, [s2p, s3p], outp, topk=topk, ngrams=ngrams,
+                                  s1_chunk=min(s1_chunk, max(1000, len(s1))),
+                                  pool_shard=pool_shard, fit_sample=fit_sample,
+                                  fit_names=fit_names)
+            union = pl.read_parquet(outp)
+        finally:
+            shutil.rmtree(tmpdir, ignore_errors=True)
+        if return_parts:
+            print("sharded full-pool run: per-pass frames unavailable, ablation skipped")
+            return union, None
+        return union
     fit = fit_names if fit_names is not None else None
     parts = {
         "exact": exact_block(s1, cd, "name_norm", "from_exact"),
