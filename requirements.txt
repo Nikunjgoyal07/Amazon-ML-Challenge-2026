@@ -1,0 +1,7 @@
+# Pinned runtime for the CPU-only ER pipeline (Python 3.14, 4 CPU / 15 GB RAM)
+polars==1.44.2
+lightgbm==4.7.0
+rapidfuzz==3.14.6
+scikit-learn==1.9.1
+scipy==1.18.1
+numpy==2.5.3
