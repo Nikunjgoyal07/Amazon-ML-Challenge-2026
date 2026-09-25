@@ -10,8 +10,8 @@ files, validate them on your computer, and upload `matching_results.tsv` to the 
 04_rethreshold.ipynb   (optional)              →  rethreshold/          same matches with another France cutoff
 ```
 
-How it works: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). What each output contains:
-[docs/DATA_AND_OUTPUTS.md](docs/DATA_AND_OUTPUTS.md).
+How it works: [ARCHITECTURE.md](ARCHITECTURE.md). What each output contains:
+[DATA_AND_OUTPUTS.md](DATA_AND_OUTPUTS.md).
 
 ## Versions
 

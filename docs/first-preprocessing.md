@@ -2,12 +2,12 @@
 
 Branch: `eda-preprocessing` | Notebook: `01_eda_preprocessing.ipynb` (executed copy: `01_eda_preprocessing.executed.ipynb`)
 Date: 2026-09-25 | Mode: EDA on **full data** (Polars lazy scans; GT explode + joins over 7.6M pairs) + normalization **executed per-country (40k samples/country)**.
-`FULL_RUN=true` runs the identical code chunked over every row → full per-country parquet. Companion: `first_preprocessing.md` (step/impact table).
+`FULL_RUN=true` runs the identical code chunked over every row → full per-country parquet.
 
 ## 1. What was done, in order
 
 1. Cloned `Nikunjgoyal07/Amazon-ML-Challenge-2026`, created/pushed branch `eda-preprocessing`.
-2. Built `01_eda_preprocessing.ipynb` from scratch via `build_notebook.py` (nbformat-generated valid JSON), 8 cells: paths → EDA basics → EDA structural → true-pair similarity → normalization → per-country run → verify.
+2. Built `01_eda_preprocessing.ipynb` from scratch via `build_notebook.py` (nbformat-generated valid JSON; the script has since been removed, so edit the notebook directly), 8 cells: paths → EDA basics → EDA structural → true-pair similarity → normalization → per-country run → verify.
 3. Bugs found and fixed during execution: empty-`DATA_ROOT` resolving to repo dir; eager-vs-lazy `.collect()`; legal-only names ("Private") stripping to empty core (now kept as core, matching the spec example); soundex vowel handling.
 4. Executed headlessly (`nbconvert --execute`): all cells PASS. Outputs in `processed/` (gitignored).
 

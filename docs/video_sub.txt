@@ -1,0 +1,203 @@
+﻿Welcome to the Amazon ML Challenge 2026.
+
+This year's problem is business entity resolution,
+
+a fundamental and widely encountered problem in real world data.
+
+You will be given business records that arrive from three independent sources,
+
+each noisy and inconsistent,
+
+and the goal is to determine which of them describe the same real world business.
+
+In this video, I will walk you through the problem statement,
+
+the data set, the scoring, the submission format, and how entries are judged.
+
+Let's... Start with where this data comes from.
+
+Consider a business signing up on Amazon Business.
+
+At signup we capture its core details, such as the business name and address.
+
+To build richer picture of that same business,
+
+we pull in additional information from other data providers.
+
+Each of these sources typically comes from
+
+a different data vendor with its own formats and conventions.
+
+The difficulty is that these external sources share no common identifier with ours,
+
+so the only fields we can rely on are the business name and address.
+
+For this challenge, we have deliberately limited the data to names and addresses.
+
+Here is the core difficulty:
+
+the same real world business is described differently by each source.
+
+One vendor may write Acme Robotics incorporated,
+
+another abbreviates the address and a third references a nearby landmark.
+
+Source one is our clean to duplicated reference list.
+
+Sources two and three are the noisy fragments that must be reconciled against it,
+
+and there is no shared identifier linking them.
+
+Entity. Resolution is the task of linking these records together,
+
+establishing that differently written records all refer to the same business.
+
+For every entity in source one,
+
+the goal is to find all of its matching records in sources two and three.
+
+A source one entity may match many records, exactly one or none at all.
+
+Comparing every source one record against every source two
+
+and source three record would be far too expensive at scale,
+
+so we first apply blocking, sorting records into buckets using.
+
+a cheap key built from both the name and the address,
+
+so that records likely to match land in the same bucket.
+
+each color here is one such block.
+
+notice that every record carries its own id,
+
+noisy name and address and records can group
+
+either through a similar name or through a shared address.
+
+we follow the orange block built around acme robotics and
+
+the records in it become the candidate matches for that entity.
+
+blocking favors recall,
+
+so the bucket also pulls in lookalikes a business with a similar name.
+
+a different address and a different business that happens to share address.
+
+the matching model removes those in the next step.
+
+blocking narrows an enormous number of possible
+
+comparisons down to a manageable set of candidate pairs.
+
+finally, a matching model scores each candidate pair and keeps only the true matches,
+
+discarding the rest.
+
+that produces the two outputs of this challenge:
+
+the candidate pairs from your blocking stage,
+
+and the final matching results, which is the file scored on the leaderboard.
+
+You are provided with two data sets.
+
+The training set contains records across all three sources,
+
+together with the ground truth labels, file that specifies for each source one business,
+
+exactly which source two and source three records it matches.
+
+The test set contains the same three sources,
+
+but no labels and this is what you generate predictions for.
+
+A note on the label format. The ground truth is stored as one row per source one entity.
+
+Its id may te to a comma separated list of all of its match.
+
+is so a single row carries that entity's complete match set,
+
+and the list is empty when the entity matches nothing.
+
+this mirrors exactly what you submit.
+
+one practical reminder: all files are tab separated,
+
+so read them with an explicit tab separator,
+
+otherwise the columns will not parse correctly.
+
+there are two deliverables: throughout the challenge, you upload a single file,
+
+matching_results.tsv containing one row per source one entity with its predicted matches.
+
+This is the only file scored on the leaderboard.
+
+At the close of the challenge, every team also submits a single archive.
+
+It contains the final matches.
+
+Along with candidate_pairs.tsv,
+
+the candidate set your blocking stage produced before the model narrowed it down.
+
+This file is not scored, but it is used to audit the quality of your blocking.
+
+The archive also includes your complete runnable
+
+pipeline and methodology document describing your approach.
+
+The packages of the top teams are reviewed in detail before. final rankings are confirmed.
+
+One reminder: run the provided validation script before submitting,
+
+so a simple formatting error does not cost you a submission.
+
+Finally, how entries are judged: submissions are scored using the macro f/0.5 metric,
+
+which weights precision twice as heavily as recall.
+
+In practical terms,
+
+incorrectly merging two different businesses
+
+is penalized roughly twice as much as missing a true match,
+
+so when in doubt it is safer not to merge.
+
+A few recommendations.
+
+First, understand singletons:
+
+a singleton is source one entity that has no m
+
+atching record in source two or source three.
+
+If you correctly predict an empty list for it, you are in a full score of one on that.
+
+entity: if you predict any match, you score zero,
+
+so identifying the businesses with no match
+
+is just as important as finding the ones that do match.
+
+second, your blocking strategy sets the ceiling on the recall you can achieve,
+
+so invest in it first, because you cannot match a record you never consider,
+
+and third, pay attention to region specific patterns in both names and addresses.
+
+one firm rule: this is pure machine learning challenge,
+
+so external databases, api and lookups, are strictly prohibited,
+
+use only the provided data.
+
+That is the challenge: build something you are proud of,
+
+resolve those entities and enjoy the process.
+
+We are excited to see what you create. All the best!

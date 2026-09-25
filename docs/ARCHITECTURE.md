@@ -54,7 +54,7 @@ used for experiments and are not needed for a submission.
 
 ## ① Preprocessing: `01_eda_preprocessing.ipynb`
 
-Built by `build_notebook.py`. It runs EDA on the full data, then normalizes every record.
+It runs EDA on the full data, then normalizes every record.
 
 **Name steps:**
 - Unicode clean-up and lower case, accent removal, junk wrappers removed (`***`, `[Services]`,

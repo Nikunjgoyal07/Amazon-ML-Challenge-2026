@@ -14,5 +14,7 @@ per S1) → `03_full_lightgbm_submission` (LightGBM judges each pair → submiss
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | How does the solution work, and why was it built this way? |
 | [docs/DATA_AND_OUTPUTS.md](docs/DATA_AND_OUTPUTS.md) | What does each folder and output file contain? |
 | [docs/FILES.md](docs/FILES.md) | What does each file in the repo do? |
-| [SUBMISSION_STEPS.md](SUBMISSION_STEPS.md) | How do I run a submission on Kaggle and validate it? |
-| [RESULTS_EXPLAINED.md](RESULTS_EXPLAINED.md) | What do the printed scores mean? |
+| [docs/SUBMISSION_STEPS.md](docs/SUBMISSION_STEPS.md) | How do I run a submission on Kaggle and validate it? |
+| [docs/RESULTS_EXPLAINED.md](docs/RESULTS_EXPLAINED.md) | What do the printed scores mean? |
+| [docs/first-preprocessing.md](docs/first-preprocessing.md) | What did the preprocessing run find and do? |
+| [docs/PLAN.md](docs/PLAN.md), [docs/RESEARCH_APPROACHES.md](docs/RESEARCH_APPROACHES.md) | What approaches were considered? |
