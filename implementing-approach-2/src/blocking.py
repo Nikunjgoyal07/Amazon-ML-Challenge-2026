@@ -104,8 +104,12 @@ def block_country(s1, s2, s3, topk=15, ngrams=(2, 5), fit_names=None, return_par
             s2.write_parquet(s2p)
             s3.write_parquet(s3p)
             block_country_sharded(s1p, [s2p, s3p], outp, topk=topk, ngrams=ngrams,
-                                  s1_chunk=min(s1_chunk, max(1000, len(s1))),
-                                  pool_shard=pool_shard, fit_sample=fit_sample,
+                                  # bounded transients for 5M+ pools: small S1 chunks,
+                                  # 500k pool shards, fit corpus capped at pool/12
+                                  s1_chunk=min(s1_chunk, 5000),
+                                  pool_shard=min(pool_shard, 500000),
+                                  fit_sample=min(fit_sample,
+                                               max(50000, (len(s2) + len(s3)) // 12)),
                                   fit_names=fit_names)
             union = pl.read_parquet(outp)
         finally:
