@@ -1,0 +1,71 @@
+# What file does what
+
+## In this repository
+
+### Notebooks for the submission (run in this order on Kaggle)
+
+| File | What it does | Input | Output | Where / time |
+|---|---|---|---|---|
+| `01_eda_preprocessing.ipynb` | EDA on all data, then cleans every record (names, legal forms, websites, addresses, flags) and writes one parquet per split/source/country. Run with `FULL_RUN=true`. | competition data | `processed/` | CPU |
+| `02_full_e5_buckets.ipynb` | Embeds every train and test record with multilingual-e5-small on both GPUs (Indian scripts transliterated first) and keeps the 30 most similar S2/S3 records of every S1 (exact search per country). | `processed/`, ground truth (for the recall report) | `embeddings_full/.../buckets/` | GPU T4 x2, ~1–1.5 h (estimate) |
+| `03_full_lightgbm_submission.ipynb` | Builds 57 comparison features per pair, trains LightGBM on 200K train S1 per country, cross-validates and picks the cutoff, predicts every test pair, applies one owner per S2/S3, writes and checks both submission files. | buckets, `processed/`, competition data | `submission/` | CPU is enough, ~3–4 h at 30 candidates (estimate) |
+| `04_rethreshold.ipynb` | Re-writes `matching_results.tsv` from 03's saved probabilities with other per-country cutoffs (e.g. a stricter France cutoff), in minutes. | `submission/`, competition data | `rethreshold/` | CPU, minutes |
+
+### Notebooks for experiments (sample data, not needed for a submission)
+
+| File | What it does |
+|---|---|
+| `02_e5_embeddings.ipynb` | Builds a diverse sample (default 100K per source; linked matches, distractors, hard cases such as native script or empty address) and embeds it. It then compares FAISS IVF-PQ with exact search and reports how many true matches the buckets hold and simple F0.5 rules. This is where e5, mean-centering and exact search were chosen. |
+| `03_lightgbm_matcher.ipynb` | The first LightGBM matcher (44 features) on the sample buckets, with 5-fold cross-validation, the cutoff and one-owner decision, a country-transfer check and a `show_s1()` viewer. This showed LightGBM + one owner beats the cosine rule (0.974 vs 0.935 on the 500K sample). |
+
+### Code and documents
+
+| File | What it is |
+|---|---|
+| `build_notebook.py` | Generates `01_eda_preprocessing.ipynb` (the notebook is built from this script; edit here, then rebuild). The list `SPEC` decides which files are processed; it now includes test S2/S3. |
+| `README.md` | Project title and links to these docs. |
+| `docs/ARCHITECTURE.md` | The technical approach: stages, models, features, decision rule, scores, rules compliance, limitations. |
+| `docs/DATA_AND_OUTPUTS.md` | Every folder and file the notebooks create, with columns and sizes. |
+| `docs/FILES.md` | This page. |
+| `SUBMISSION_STEPS.md` | Step-by-step Kaggle run guide for a submission, what to check at each step, and how to validate locally. |
+| `RESULTS_EXPLAINED.md` | Plain-language explanation of the score tables the matcher notebooks print (F0.5, rows, cutoff table, country transfer, feature importance). |
+| `first-preprocessing.md` | Detailed run report of 01: EDA facts, normalization steps, outputs, verification. |
+| `first_preprocessing.md` | Shorter version of the same report as a step / why / impact table. |
+| `.gitignore` | Keeps `processed/`, executed notebooks and caches out of git. |
+| `matching_results.tsv`, `candidate_pairs.tsv` | The **first submission** (old version: 44 features, 20 candidates, no transliteration; public score 0.935). Large (94 MB and 469 MB). Keep them out of git. |
+
+---
+
+## Outside the repository (workspace `c:\Code\Amazon-ML-2026\`)
+
+| Path | What it is |
+|---|---|
+| `Data/student_resource/dataset/` | the competition data (`train/`, `test/`) |
+| `Data/student_resource/utils/validate_submission.py` | the official validator: run it before every upload |
+| `Data/student_resource/Documentation_template.md` | the methodology template to fill in for the final zip |
+| `Data/student_resource/README.md` | the problem statement as markdown |
+| `amazon_ml_challenge_problem_statement.pdf`, `guidelines_and_key_instructions_amazon_ml_challenge_2026.pdf` | official problem statement and guidelines |
+| `PLAN.md` | the original plan (approaches considered, recommended pipeline) |
+| `RESEARCH_APPROACHES.md` | survey of winning solutions and research on entity resolution |
+| `explanation.md` | a plain-language breakdown of the problem |
+| `video_sub.txt` | transcript of the problem-statement video |
+| `embeddings/` | a local copy of a sample-notebook (02) output |
+
+---
+
+## Settings you may want to change
+
+Every notebook has its settings in the first code cell. On Kaggle, edit them there; locally, you can
+also set them as environment variables.
+
+| Notebook | Setting | Default | Meaning |
+|---|---|---|---|
+| 01 | `FULL_RUN` | `false` | `true` = process every row (needed for a submission) |
+| 02_full | `SPLITS` | `train,test` | which splits to build buckets for |
+| 02_full | `TOP_K` | 30 | candidates kept per S1 |
+| 02_full | `TEXT_MODE` | `fixed` | `fixed` = 01's text, with Indian scripts transliterated from the original |
+| 03_full | `CANDIDATES_PER_S1` | 30 | candidates judged per S1 (≤ 02's `TOP_K`) |
+| 03_full | `TRAIN_S1_PER_COUNTRY` | 200,000 | train S1 used for learning per country (lower it if memory runs out) |
+| 03_full | `COUNTRY_THRESHOLDS` | `{}` | stricter cutoff for a country, e.g. `{"France": 0.8}` |
+| 03_full | `FEATURE_SET` | `all` | `base` = the 44 features of the sample notebook (for comparison) |
+| 04 | `COUNTRY_THRESHOLDS` | `{"France": 0.80}` | cutoffs to try; other countries keep 03's tuned cutoff |

@@ -411,7 +411,8 @@ def process_full_per_country(src, stem, chunk=CHUNK):
     return out
 
 counts = {}
-SPEC = [("s1tr", "train_s1"), ("s1te", "test_s1"), ("s2tr", "train_s2"), ("s3tr", "train_s3")]
+SPEC = [("s1tr", "train_s1"), ("s1te", "test_s1"), ("s2tr", "train_s2"), ("s3tr", "train_s3"),
+        ("s2te", "test_s2"), ("s3te", "test_s3")]   # test S2/S3 are needed for the submission
 for k, stem in SPEC:
     if FULL_RUN:
         counts[k] = process_full_per_country(P[k], stem)
