@@ -1,4 +1,6 @@
 processed/
+implementing-approach-2/outputs/
+emb_*.npy
 *.executed.ipynb
 __pycache__/
 .ipynb_checkpoints/
