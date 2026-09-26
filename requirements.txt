@@ -1,0 +1,30 @@
+# Business entity resolution pipeline (notebooks 01-04).
+# Pinned to the versions the pipeline was tested with locally (Python 3.12.10).
+# Kaggle images ship most of these; the notebooks pip-install anyascii, lightgbm, rapidfuzz and
+# faiss-cpu themselves when they are missing.
+#
+# Install:  pip install -r requirements.txt
+# GPU PyTorch (CUDA 12.6), used for the T4s:
+#           pip install torch==2.14.0 --index-url https://download.pytorch.org/whl/cu126
+
+# data
+numpy==2.5.3
+pandas==3.0.6
+pyarrow==25.0.1
+polars==1.44.2                 # 01 preprocessing
+
+# embeddings (intfloat/multilingual-e5-small, MIT) and GPU search
+torch==2.14.0
+sentence-transformers==6.1.0   # Apache-2.0
+transformers==5.17.0
+faiss-cpu==1.15.1              # 02 sample notebook only (IVF-PQ comparison)
+
+# matching model and features
+lightgbm==4.7.0                # MIT
+rapidfuzz==3.14.6              # MIT
+anyascii==0.3.3                # ISC, transliteration of Indian scripts
+
+# running the notebooks
+tqdm==4.70.1
+ipykernel
+nbformat==5.11.1

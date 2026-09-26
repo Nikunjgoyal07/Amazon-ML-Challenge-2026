@@ -7,8 +7,9 @@ are the same business. The score is F0.5 per S1, averaged over all S1:
 - An S1 with no true match scores 1 only if we predict nothing.
 
 **Approach in one sentence.** Clean the records, use a multilingual embedding model to shortlist the
-30 most similar S2/S3 records for every S1, let a LightGBM model judge each (S1, candidate) pair, and
-keep the likely pairs under the rule that each S2/S3 record belongs to at most one S1.
+30 most similar S2/S3 records for every S1 (plus a few found by address, name and reverse searches),
+let a LightGBM model judge each (S1, candidate) pair, and keep the likely pairs under the rule that
+each S2/S3 record belongs to at most one S1.
 
 ```
  raw TSVs (train + test)
@@ -18,9 +19,10 @@ keep the likely pairs under the rule that each S2/S3 record belongs to at most o
         │
         ▼
  ② 02_full_e5_buckets            multilingual-e5-small embeddings (both GPUs)
-        │                         exact top-30 search per country → buckets/<split>_<country>.parquet
+        │                         exact top-30 search per country + extra candidates (reverse search,
+        │                         address key, name 3-grams) → buckets/<split>_<country>.parquet
         ▼
- ③ 03_full_lightgbm_submission   57 comparison features per (S1, candidate) pair
+ ③ 03_full_lightgbm_submission   82 comparison features per (S1, candidate) pair
         │                         LightGBM trained on train buckets → probability per test pair
         │                         keep p ≥ t, one owner per S2/S3 → matching_results.tsv, candidate_pairs.tsv
         ▼
@@ -88,6 +90,19 @@ bucket can ever be matched, so this stage sets the ceiling of the whole system.
   (ISC license), e.g. "సన్ ఎనర్జీ లిమిటెడ్" → "sn enrji limited".
 - Without this, 57% of India's Indian-script true matches were missing from the buckets. With it,
   India's ceiling rose from 0.939 to 0.963 on the test bed.
+- Two fixes on top of anyascii: Malayalam "റ്റ" becomes "tt" (anyascii gives "rr": "limirrd" for
+  "limited"), and the nasal dot becomes "n" before most consonants (anyascii always gives "m": "anmd"
+  for "Anand"). Name similarity of Indian-script true matches to their S1 rose 71.9 → 75.1
+  (Malayalam 66.1 → 72.5). The same function is used in 03.
+- **Word map for Indian-script names:** most such names are English words written in an Indian
+  script, so their transliterations are misspelled English ("smart solyusns praivet limited"). A map of
+  ~370 words learned from the train true pairs sends them back to English ("smart solutions private
+  limited"). Name similarity of Indian-script true pairs to their S1, measured on S1 not used for
+  learning: Hindi 76 → 91, Tamil 63 → 88, Malayalam 73 → 92, the other scripts similar. The test-bed
+  matcher went 0.9667 → 0.9675 (cross-country +0.003 to +0.005). 02 learns it (~1.5 min) and saves
+  `translit_wordmap.json` with the buckets; 03 uses the same file.
+- Indian-script records remain the weak spot of the search: on the test bed they were a third of
+  India's true matches but two thirds of its misses. 02's train report shows this split at full size.
 
 **Embeddings:** `intfloat/multilingual-e5-small` (MIT, 118M parameters, 384 dimensions), with the
 `query: ` prefix:
@@ -102,8 +117,23 @@ bucket can ever be matched, so this stage sets the ceiling of the whole system.
 - **Why not FAISS IVF-PQ:** on India data it found 85.5% of true matches vs 95.3% for exact search,
   and its compression saved no memory here. Exact search on two T4s takes minutes per country.
 
-**Output:** `buckets/<split>_<country>.parquet`, one row per (S1, candidate) with rank and two
-similarity values. The embeddings themselves are not saved: all 24M records would take ~18.6 GB,
+**Extra candidate sources.** e5 compares name and address together, so it misses some matches.
+Three other searches add candidates to each bucket:
+
+| Source | A pair is added when | Catches |
+|---|---|---|
+| Reverse search | the S1 is among the 2 best S1 of the S2/S3 record (same e5 score, searched from the candidate's side) | matches pushed below rank 30 by lookalikes in crowded cities |
+| Address key | same house number and first street word (keys shared by more than 20 candidates are skipped) | same address, different or garbled name |
+| Name 3-grams | among the S1's 5 most similar names by character 3-grams (TF-IDF cosine, on the GPUs) | same name, different or empty address; typos |
+
+On the test bed, the address key and name 3-grams raised India's recall from 91.4% to 93.3% (ceiling
+0.967 → 0.974) for 3.7 extra pairs per S1, and the US's from 98.7% to 99.1%. The reverse search was
+not measured there (it needs the embeddings). Per extra pair, they found 4–10× more missed matches
+than a bigger e5 top-k. 02's train report measures every source at full size. Each bucket row
+records which searches found it, and 03 uses that as features. `EXTRA_SOURCES=""` turns them off.
+
+**Output:** `buckets/<split>_<country>.parquet`, one row per (S1, candidate) with rank, two
+similarity values and which searches found it. The embeddings themselves are not saved: all 24M records would take ~18.6 GB,
 close to Kaggle's 20 GB output limit.
 
 **How good is it (train, top 30, full size):** the ceiling (best possible score if the judge were
@@ -115,12 +145,12 @@ India with the fix, measured on the test bed.
 ## ③ Matching model: `03_full_lightgbm_submission.ipynb`
 
 **Training data:**
-- 200,000 random train S1 per country, with their 30 candidates each (~12M pairs), labeled from
-  `train_ground_truth.tsv`.
+- 200,000 random train S1 per country, with their 30 e5 candidates and the extra candidates each
+  (~13M pairs), labeled from `train_ground_truth.tsv`.
 - The buckets are the full-size ones, so every S1 competes with all its real lookalikes, exactly as
   on test. (Training on a small sample gave misleadingly high scores: 0.974 vs 0.946 in reality.)
 
-**Features (57 per pair).** Country is **not** a feature, so the same model applies to France.
+**Features (82 per pair).** Country is **not** a feature, so the same model applies to France.
 
 | Group | Examples | Why |
 |---|---|---|
@@ -130,8 +160,11 @@ India with the fix, measured on the test bed.
 | Address | cleaned and raw address ratios, shared street tokens, shared numbers, postcode, house number, city, state | the address separates lookalikes with the same name |
 | **Street** | street name (the address part with the house number, minus numbers and street words); house number | "45 Rue du Port Durand" ≠ "45 Rue du Pressor" |
 | **Word rarity** | name/address overlap weighted by how rare each word is among the country's S1 (IDF); the rarest unmatched word on each side | sharing "club" means little, sharing "diaspora" a lot |
+| **Typo-tolerant word rarity** | the word-rarity features again, counting words that differ by a typo (1 letter for 4–5 letter words, 2 for longer) as shared | "Westgrove" vs "Wcstgrove" should not count as a missing rare word; kept next to the exact ones (test bed 0.9667 → 0.9675; tolerant alone was worse, 0.9659) |
+| **Candidate vs candidate** | how far this candidate is behind the best candidate of the same S1 on address, street, name and word rarity, and its rank; how many near-identical names/addresses the bucket has; how many candidates have an equally close name and a clearly better address | "Bordeaux Club, 45 Rue Judaïque" loses to the candidate at the S1's own street; test bed 0.9667 → 0.9668, cross-country check +0.003 / +0.0004 (the France stand-in) |
 | **Name frequency** | how many S1 per 100K in the country share the name | "Bordeaux Club" appears hundreds of times |
 | Flags | candidate from S2/S3, native script, website name, empty address, honorific, landmark | tells the model which comparisons to trust |
+| **Found by** | rank in the e5 search; rank of this S1 among the candidate's best S1 (reverse search); same house number + street word; rank among the S1's most similar names | how much to trust a candidate from each search |
 
 - Rarity and frequency are computed per country from unlabeled S1 records, so they adapt to France.
 - Indian-script names and addresses are transliterated with `anyascii` for all comparisons.
@@ -168,8 +201,8 @@ India with the fix, measured on the test bed.
 
 - `matching_results.tsv`: every test S1 exactly once, tab-separated, comma-separated IDs, empty
   when no match. **This is the file the leaderboard scores.**
-- `candidate_pairs.tsv`: the exact pairs the model scored, 30 per S1, so the matches are always a
-  subset of them.
+- `candidate_pairs.tsv`: the exact pairs the model scored (30 e5 candidates per S1 plus the extra
+  ones), so the matches are always a subset of them.
 - 03 checks both files against the submission rules and runs `validate_submission.py` if it is
   attached. Run the validator locally too (see `SUBMISSION_STEPS.md`).
 

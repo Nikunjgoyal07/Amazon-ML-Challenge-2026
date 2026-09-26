@@ -3,3 +3,6 @@ processed/
 __pycache__/
 .ipynb_checkpoints/
 *.tsv
+submission-*/
+model_comparison*.csv
+/submission/

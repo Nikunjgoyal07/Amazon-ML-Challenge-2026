@@ -5,7 +5,7 @@ files, validate them on your computer, and upload `matching_results.tsv` to the 
 
 ```
 01_eda_preprocessing.ipynb  (FULL_RUN=true)   →  processed/            cleaned train + test records
-02_full_e5_buckets.ipynb                       →  embeddings_full/      top-30 candidates per S1 (train + test)
+02_full_e5_buckets.ipynb                       →  embeddings_full/      top-30 + extra candidates per S1 (train + test)
 03_full_lightgbm_submission.ipynb              →  submission/           matching_results.tsv, candidate_pairs.tsv
 04_rethreshold.ipynb   (optional)              →  rethreshold/          same matches with another France cutoff
 ```
@@ -18,10 +18,11 @@ How it works: [ARCHITECTURE.md](ARCHITECTURE.md). What each output contains:
 | Version | What changed | Score |
 |---|---|---|
 | 1 (first submission) | 44 features, 20 candidates per S1 | public leaderboard **0.935** (India 0.921, US 0.970 in cross-validation; France ≈ 0.88) |
-| **2 (current notebooks)** | Indian-script text transliterated before embedding (02); 13 new comparisons: street, word rarity, name frequency (03); 30 candidates per S1 | local test bed 0.943 → **0.967** for India + US; expected leaderboard **~0.95** (estimate) |
+| 2 | Indian-script text transliterated before embedding (02); 13 new comparisons: street, word rarity, name frequency (03); 30 candidates per S1 | local test bed 0.943 → **0.967** for India + US; expected leaderboard **~0.95** (estimate) |
+| **3 (current notebooks)** | extra candidates from a reverse search, an address key and a name 3-gram search (02); 4 "found by" features (03); two transliteration fixes and a learned word map for Indian-script names (02, 03); 8 typo-tolerant word-rarity features and 13 candidate-vs-candidate features (03) | test bed: India recall 91.4% → 93.3%, ceiling 0.967 → 0.974 (address + name searches); typo features 0.9667 → 0.9675; candidate-vs-candidate: cross-country 0.8761 → 0.8789; final score not measured yet |
 
-Version 2 needs **02 (full) and 03 (full) re-run**. The text given to the embedding model changed, so
-the version 1 buckets can't be reused. 01's output can be reused.
+Version 3 needs **02 (full) and 03 (full) re-run**. 01's output can be reused. To compare with
+version 2 in the same run, 03 can ignore the extra candidates (`USE_EXTRA_CANDIDATES=false`).
 
 ---
 
@@ -52,13 +53,24 @@ version 1 did), reuse it and skip this step.
 - **What it does:**
   1. Transliterates Indian-script names and addresses to Latin letters.
   2. Encodes all ~24M train and test records on both GPUs.
-  3. Saves the top 30 candidates of every S1 in `embeddings_full/multilingual-e5-small/buckets/`.
-- **Time:** estimate 1–1.5 hours. It prints texts/s while encoding. If the session stops,
+  3. Keeps the top 30 candidates of every S1, adds the extra candidates (reverse search, address key,
+     name 3-grams), and saves them in `embeddings_full/multilingual-e5-small/buckets/`.
+- **Time:** estimate 1.5–2 hours (the extra sources add roughly 30–45 minutes, mostly the name search). It prints texts/s while encoding. If the session stops,
   re-running in the same session continues after the last finished bucket file.
 - **Check before moving on:**
   - five bucket files: `train_India`, `train_US`, `test_France`, `test_India`, `test_US`
-  - the last table: at k = 30, India's "ceiling macro F0.5" should be clearly above version 1's 0.946
-    (about 0.97 on the local test bed). The US should stay around 0.994.
+  - each bucket prints `new pairs per S1 by source`: a few per source (France's address key may add
+    more, crowded cities share addresses)
+  - the last table: India's "ceiling macro F0.5" for `e5 top-30` should be clearly above version 1's
+    0.946 (about 0.97 on the local test bed), and `e5 top-30 + all extra (saved)` higher still
+    (about 0.974 on the test bed without the reverse search). The US should stay around 0.994.
+  - to judge a source, compare its row with `e5 top-40`/`e5 top-50` at similar "pairs per S1". A
+    source that adds pairs without raising the share of true matches can be dropped from
+    `EXTRA_SOURCES`.
+  - India's "... Indian-script candidates" vs "... Latin-script candidates": on the test bed, 17% of
+    Indian-script true matches were missing from the buckets vs 4% for Latin script. If the gap is
+    still large at full size, a better transliteration (e.g. the IndicXlit plan in
+    `docs/hybridplanner.md`) is the next thing to test.
 
 ## Step 3: 03_full_lightgbm_submission.ipynb
 
@@ -68,12 +80,14 @@ version 1 did), reuse it and skip this step.
 - **Accelerator:** not needed (CPU work). **Internet:** on, to install `anyascii` if missing.
 - **Run all.**
 - **What it does:**
-  1. Trains LightGBM on 200,000 train S1 per country with 57 features each.
+  1. Trains LightGBM on 200,000 train S1 per country with 82 features each.
   2. Cross-validates and picks the cutoff.
-  3. Predicts every test pair (30 per S1) and writes both files.
+  3. Predicts every test pair (30 e5 candidates per S1 plus the extra ones) and writes both files.
   4. Checks the files.
 - **Time:** estimate 3–4 hours. Version 1 took about 1 hour for test prediction with 20 candidates
   and 44 features; version 2 has 50% more pairs and heavier features.
+  Version 3 adds about 15% more pairs (the extra candidates) and the typo-tolerant features, roughly
+  30–40 minutes more (estimate).
 - **Check before downloading:**
   - **Cross-validation table:** the row "LightGBM p ≥ t + one owner (used for the submission)" is
     the expected score for India + US. Version 1 had 0.946; expect about 0.96.

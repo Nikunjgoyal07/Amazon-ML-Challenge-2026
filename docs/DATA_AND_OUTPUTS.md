@@ -57,21 +57,26 @@ text themselves.
 
 | File | Content | Full-size rows / size |
 |---|---|---|
-| `buckets/train_India.parquet`, `buckets/train_US.parquet` | top 30 candidates of every train S1 | ~66M rows in total |
-| `buckets/test_France.parquet`, `buckets/test_India.parquet`, `buckets/test_US.parquet` | top 30 candidates of every test S1 | ~52M rows in total |
-| `bucket_recall_train.csv` | per country and k (5/10/20/30): share of true matches inside the train buckets, and the ceiling score | a few rows |
-| `manifest.json` | settings (model, text mode, top-k), records and timings per bucket file | |
+| `buckets/train_India.parquet`, `buckets/train_US.parquet` | top 30 e5 candidates of every train S1, plus the extra candidates | ~70M rows in total (estimate) |
+| `buckets/test_France.parquet`, `buckets/test_India.parquet`, `buckets/test_US.parquet` | the same for every test S1 | ~57M rows in total (estimate) |
+| `bucket_recall_train.csv` | per country and candidate set (e5 top-20/30/40/50, e5 top-30 plus each extra source, everything saved): pairs per S1, share of true matches inside (overall, and split by whether the candidate is written in an Indian script or in Latin script), ceiling score | a few rows |
+| `manifest.json` | settings (model, text mode, top-k, extra sources), records, new pairs per source and timings per bucket file | |
+| `translit_wordmap.json` | the word map for Indian-script names ({"praivet": "private", …}, ~370 words), learned from the train true pairs; 03 (full) reads it | a few KB |
 
 Bucket columns, one row per (S1, candidate):
 
 | Column | Meaning |
 |---|---|
 | `s1_entity_id`, `candidate_entity_id` | the pair |
-| `rank` | 0 = the most similar candidate of this S1 |
+| `rank` | position in the bucket by `score`, 0 = the most similar candidate of this S1 |
 | `candidate_source` | `S2` or `S3` |
 | `score` | similarity after mean-centering (what the search ranks by) |
 | `cosine` | original e5 cosine similarity (0–1) |
 | `country` | the country of both records |
+| `e5_rank` | rank in the e5 search (0–29); empty = added by another search only |
+| `rev_rank` | rank of this S1 among the candidate's 5 best S1 (reverse search); empty = not among them |
+| `addr_key` | 1 = same house number and first street word |
+| `name_rank` | rank among the S1's 5 most similar names (character 3-grams); empty = not among them |
 
 The embeddings themselves are **not** saved: ~18.6 GB for all 24M records, close to Kaggle's 20 GB
 output limit. Nothing downstream needs them.
@@ -103,7 +108,9 @@ output limit. Nothing downstream needs them.
 
 ## Sample experiments (not needed for a submission)
 
-### `embeddings/multilingual-e5-small/`, written by `02_e5_embeddings.ipynb`
+### `embeddings/<model>/<sample>/`, written by `02_e5_embeddings.ipynb`
+
+One folder per sample, named from its size (e.g. `sample_100k`, `sample_s1-50k_s2-200k_s3-200k_India`), so samples of different sizes sit side by side.
 
 The sample notebook embeds a diverse sample (default 100K per source; 500K was used on Kaggle).
 
@@ -116,7 +123,9 @@ The sample notebook embeds a diverse sample (default 100K per source; 500K was u
 | `faiss/index_<country>.faiss`, `faiss/mean_<country>.npy` | the IVF-PQ index and the centering mean (IVF-PQ mode only) |
 | `faiss/bucket_recall.csv`, `faiss/metric_f05.csv` | true matches in the buckets; F0.5 table for simple rules |
 
-### `lgbm_matcher/`, written by `03_lightgbm_matcher.ipynb`
+### `lgbm_matcher/<model>/<sample>/`, written by `03_lightgbm_matcher.ipynb`
+
+One folder per sample it was trained on (plus `_max<N>` when `MAX_S1` limits the S1).
 
 | File | Content |
 |---|---|

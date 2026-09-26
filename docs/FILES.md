@@ -7,15 +7,15 @@
 | File | What it does | Input | Output | Where / time |
 |---|---|---|---|---|
 | `01_eda_preprocessing.ipynb` | EDA on all data, then cleans every record (names, legal forms, websites, addresses, flags) and writes one parquet per split/source/country. Run with `FULL_RUN=true`. | competition data | `processed/` | CPU |
-| `02_full_e5_buckets.ipynb` | Embeds every train and test record with multilingual-e5-small on both GPUs (Indian scripts transliterated first) and keeps the 30 most similar S2/S3 records of every S1 (exact search per country). | `processed/`, ground truth (for the recall report) | `embeddings_full/.../buckets/` | GPU T4 x2, ~1–1.5 h (estimate) |
-| `03_full_lightgbm_submission.ipynb` | Builds 57 comparison features per pair, trains LightGBM on 200K train S1 per country, cross-validates and picks the cutoff, predicts every test pair, applies one owner per S2/S3, writes and checks both submission files. | buckets, `processed/`, competition data | `submission/` | CPU is enough, ~3–4 h at 30 candidates (estimate) |
+| `02_full_e5_buckets.ipynb` | Embeds every train and test record with multilingual-e5-small on both GPUs (Indian scripts transliterated first), keeps the 30 most similar S2/S3 records of every S1 (exact search per country), and adds candidates from a reverse search, an address key and a name 3-gram search. | `processed/`, ground truth (for the recall report) | `embeddings_full/.../buckets/` | GPU T4 x2, ~1.5–2 h (estimate) |
+| `03_full_lightgbm_submission.ipynb` | Builds 82 comparison features per pair, trains LightGBM on 200K train S1 per country, cross-validates and picks the cutoff, predicts every test pair, applies one owner per S2/S3, writes and checks both submission files. | buckets, `processed/`, competition data | `submission/` | CPU is enough, ~3–4 h at 30 candidates (estimate) |
 | `04_rethreshold.ipynb` | Re-writes `matching_results.tsv` from 03's saved probabilities with other per-country cutoffs (e.g. a stricter France cutoff), in minutes. | `submission/`, competition data | `rethreshold/` | CPU, minutes |
 
 ### Notebooks for experiments (sample data, not needed for a submission)
 
 | File | What it does |
 |---|---|
-| `02_e5_embeddings.ipynb` | Builds a diverse sample (default 100K per source; linked matches, distractors, hard cases such as native script or empty address) and embeds it. It then compares FAISS IVF-PQ with exact search and reports how many true matches the buckets hold and simple F0.5 rules. This is where e5, mean-centering and exact search were chosen. |
+| `02_e5_embeddings.ipynb` | Builds a diverse sample (size set in one place, `SAMPLE_SIZE`, default 100K per source; linked matches, distractors, hard cases such as native script or empty address) and embeds it. It then compares FAISS IVF-PQ with exact search and reports how many true matches the buckets hold and simple F0.5 rules. This is where e5, mean-centering and exact search were chosen. |
 | `03_lightgbm_matcher.ipynb` | The first LightGBM matcher (44 features) on the sample buckets, with 5-fold cross-validation, the cutoff and one-owner decision, a country-transfer check and a `show_s1()` viewer. This showed LightGBM + one owner beats the cosine rule (0.974 vs 0.935 on the 500K sample). |
 
 ### Code and documents
@@ -23,6 +23,7 @@
 | File | What it is |
 |---|---|
 | `README.md` | Project title, pipeline in one line, links to the docs. |
+| `requirements.txt` | Pinned Python packages the notebooks use (tested versions; GPU PyTorch install line included). |
 | `docs/ARCHITECTURE.md` | The technical approach: stages, models, features, decision rule, scores, rules compliance, limitations. |
 | `docs/DATA_AND_OUTPUTS.md` | Every folder and file the notebooks create, with columns and sizes. |
 | `docs/FILES.md` | This page. |
@@ -65,9 +66,27 @@ also set them as environment variables.
 | 01 | `FULL_RUN` | `false` | `true` = process every row (needed for a submission) |
 | 02_full | `SPLITS` | `train,test` | which splits to build buckets for |
 | 02_full | `TOP_K` | 30 | candidates kept per S1 |
+| 02_full | `E5_MODELS` | `small` | one or more of `small` / `base` / `large` (multilingual-e5, MIT) or a model id, comma-separated (e.g. `small,base,large`); each runs in the same Run all, one after the other (word map and ground truth shared, not relearned), each to its own `embeddings_full/<model>/` folder. With more than one, the last section compares every model's `bucket_recall_train.csv` side by side (per candidate set and country) and saves `embeddings_full/model_comparison.csv`. `E5_MODEL` (singular) still works for one model. |
 | 02_full | `TEXT_MODE` | `fixed` | `fixed` = 01's text, with Indian scripts transliterated from the original |
-| 03_full | `CANDIDATES_PER_S1` | 30 | candidates judged per S1 (≤ 02's `TOP_K`) |
+| 02_full | `EXTRA_SOURCES` | `reverse,address,name` | extra candidate searches; `""` = e5 top-k only |
+| 02_full, 03_full | `WORD_MAP` | `true` | map transliterated Indian-script words back to English ("praivet" → private), learned from the train pairs |
+| 02_full | `REVERSE_TOP` | 2 | add the pair when the S1 is among the candidate's best 2 S1 |
+| 02_full | `ADDRESS_KEY_CAP` | 20 | skip house number + street keys shared by more candidates |
+| 02_full | `NAME_TOP` | 5 | name 3-gram matches added per S1 |
+| 03_full | `CANDIDATES_PER_S1` | 30 | e5 candidates judged per S1 (≤ 02's `TOP_K`) |
+| 03_full | `USE_EXTRA_CANDIDATES` | `true` | also judge 02's extra candidates |
 | 03_full | `TRAIN_S1_PER_COUNTRY` | 200,000 | train S1 used for learning per country (lower it if memory runs out) |
 | 03_full | `COUNTRY_THRESHOLDS` | `{}` | stricter cutoff for a country, e.g. `{"France": 0.8}` |
-| 03_full | `FEATURE_SET` | `all` | `base` = the 44 features of the sample notebook (for comparison) |
+| 03_full | `FEATURE_SET` | `all` | all 82 features; `base` = the 44 features of the sample notebook (for comparison) |
 | 04 | `COUNTRY_THRESHOLDS` | `{"France": 0.80}` | cutoffs to try; other countries keep 03's tuned cutoff |
+| 02 (sample) | `E5_MODELS` | `small,base,large` | the models to run, one after the other in the same run (the sample is built once); each saves to `embeddings/<model>/<sample>/`, and the last section compares them: recall per k and country, India recall by script, ceiling scores, encoding speed |
+| 02 (sample) | `EXTRA_SEARCHES` | `true` | also run 02 full's reverse / address / name searches for every model, and compare e5 top-k alone vs e5 top-30 + each search + all of them |
+| 02 (sample) | `WORD_MAP` | `true` | with `TEXT_MODE=fixed`, map transliterated Indian-script words back to English (learned from the train pairs, shared across models) |
+| 02 (sample) | `SAMPLE_SIZE` | `100k` | records per source: a number, `20k` / `500k` / `1.5m`, or `tiny` / `small` / `medium` / `large` (10k / 100k / 500k / 1m) |
+| 02 (sample) | `N_S1`, `N_S2`, `N_S3` | empty | a different size for one source (same format) |
+| 02 (sample) | `COUNTRIES` | all | e.g. `India,US`: sample only these countries |
+| 02 (sample) | `SAMPLE_NAME` | from the sizes | output folder name (`sample_100k`, …) |
+| 02 (sample) | `BUCKET_METHOD` | `auto` | `auto` = IVF-PQ comparison up to 200K per source, exact search only above |
+| 03 (sample) | `E5_MODEL` | any | which model's sample to train on (needed when a sample exists for several models); the last cell compares the models' scores |
+| 03 (sample) | `SAMPLE_NAME` | newest | which 02 sample to train on |
+| 03 (sample) | `MAX_S1` | 0 (all) | keep a random subset of the sample's S1, for quick runs |

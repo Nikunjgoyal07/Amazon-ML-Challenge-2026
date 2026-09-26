@@ -4,7 +4,7 @@ Business entity resolution: for every Source 1 business, find the Source 2 / Sou
 are the same business.
 
 **Pipeline:** `01_eda_preprocessing` (clean) → `02_full_e5_buckets` (embed + shortlist 30 candidates
-per S1) → `03_full_lightgbm_submission` (LightGBM judges each pair → submission files) →
+per S1, plus a few from address, name and reverse searches) → `03_full_lightgbm_submission` (LightGBM judges each pair → submission files) →
 `04_rethreshold` (optional per-country cutoffs).
 
 ## Documentation
