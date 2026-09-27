@@ -22,7 +22,7 @@ each S2/S3 record belongs to at most one S1.
         │                         exact top-30 search per country + extra candidates (reverse search,
         │                         address key, name 3-grams) → buckets/<split>_<country>.parquet
         ▼
- ③ 03_full_lightgbm_submission   82 comparison features per (S1, candidate) pair
+ ③ 03_full_lightgbm_submission   85 comparison features per (S1, candidate) pair
         │                         LightGBM trained on train buckets → probability per test pair
         │                         keep p ≥ t, one owner per S2/S3 → matching_results.tsv, candidate_pairs.tsv
         ▼
@@ -118,19 +118,34 @@ bucket can ever be matched, so this stage sets the ceiling of the whole system.
   and its compression saved no memory here. Exact search on two T4s takes minutes per country.
 
 **Extra candidate sources.** e5 compares name and address together, so it misses some matches.
-Three other searches add candidates to each bucket:
+Five other searches add candidates to each bucket:
 
 | Source | A pair is added when | Catches |
 |---|---|---|
 | Reverse search | the S1 is among the 2 best S1 of the S2/S3 record (same e5 score, searched from the candidate's side) | matches pushed below rank 30 by lookalikes in crowded cities |
 | Address key | same house number and first street word (keys shared by more than 20 candidates are skipped) | same address, different or garbled name |
 | Name 3-grams | among the S1's 5 most similar names by character 3-grams (TF-IDF cosine, on the GPUs) | same name, different or empty address; typos |
+| Number key (India) | the addresses share a number (house, plot, door, PIN) with another word of 3+ letters, e.g. `206 + pune` (keys shared by more than 10 candidates are skipped) | chopped-down addresses with no street word ("Door No 206, Pune, MH"), which the address key cannot use |
+| Empty-address names | the name search over only the candidates with no address: each one's 3 closest S1 names, and each S1's 2 closest names among them | a candidate with a name only, crowded out of the other searches by lookalikes that have an address |
 
 On the test bed, the address key and name 3-grams raised India's recall from 91.4% to 93.3% (ceiling
 0.967 → 0.974) for 3.7 extra pairs per S1, and the US's from 98.7% to 99.1%. The reverse search was
 not measured there (it needs the embeddings). Per extra pair, they found 4–10× more missed matches
 than a bigger e5 top-k. 02's train report measures every source at full size. Each bucket row
 records which searches found it, and 03 uses that as features. `EXTRA_SOURCES=""` turns them off.
+
+The number key and the empty-address search were measured on the full train data (submission 2's buckets,
+which had the first three sources). India's buckets missed 167.7K of 3.06M true pairs (recall 0.9452, 37.3
+pairs per S1):
+- 23% of those misses had a candidate with **no address** (38.0K; 70% of the US's 31.2K misses). Their names
+  are close to the S1's (median similarity 97), but e5 compares "name | address" with a bare name and the name
+  search is crowded out by lookalikes. The empty-address search (S1 top-2 + candidate top-2) found 38.6% of them
+  for at most 1.8 new pairs per S1 (US: 21.0% for 1.4); the candidate side alone (top-3) 24.9% for 0.3.
+- Of the misses with an address, 70% had an Indian-script name (the word map rescues about half of those),
+  and the candidate's address was usually cut down to "number, city, state": 83% had a number but only 28%
+  a street word, so the address key could not key them. The number key (cap 10) found 22.6K misses for 3.9
+  new pairs per S1 (recall 0.9452 -> 0.9526); cap 5: 15.0K for 0.9 pairs.
+- For comparison, a bigger e5 top-k (30 -> 50) costs 20 pairs per S1.
 
 **Output:** `buckets/<split>_<country>.parquet`, one row per (S1, candidate) with rank, two
 similarity values and which searches found it. The embeddings themselves are not saved: all 24M records would take ~18.6 GB,
@@ -150,7 +165,7 @@ India with the fix, measured on the test bed.
 - The buckets are the full-size ones, so every S1 competes with all its real lookalikes, exactly as
   on test. (Training on a small sample gave misleadingly high scores: 0.974 vs 0.946 in reality.)
 
-**Features (82 per pair).** Country is **not** a feature, so the same model applies to France.
+**Features (85 per pair).** Country is **not** a feature, so the same model applies to France.
 
 | Group | Examples | Why |
 |---|---|---|
@@ -164,7 +179,7 @@ India with the fix, measured on the test bed.
 | **Candidate vs candidate** | how far this candidate is behind the best candidate of the same S1 on address, street, name and word rarity, and its rank; how many near-identical names/addresses the bucket has; how many candidates have an equally close name and a clearly better address | "Bordeaux Club, 45 Rue Judaïque" loses to the candidate at the S1's own street; test bed 0.9667 → 0.9668, cross-country check +0.003 / +0.0004 (the France stand-in) |
 | **Name frequency** | how many S1 per 100K in the country share the name | "Bordeaux Club" appears hundreds of times |
 | Flags | candidate from S2/S3, native script, website name, empty address, honorific, landmark | tells the model which comparisons to trust |
-| **Found by** | rank in the e5 search; rank of this S1 among the candidate's best S1 (reverse search); same house number + street word; rank among the S1's most similar names | how much to trust a candidate from each search |
+| **Found by** | rank in the e5 search; rank of this S1 among the candidate's best S1 (reverse search); same house number + street word; rank among the S1's most similar names; same number + address word; for candidates with no address, the rank in the name search over them from each side | how much to trust a candidate from each search |
 
 - Rarity and frequency are computed per country from unlabeled S1 records, so they adapt to France.
 - Indian-script names and addresses are transliterated with `anyascii` for all comparisons.

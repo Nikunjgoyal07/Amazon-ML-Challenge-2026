@@ -67,6 +67,10 @@ version 1 did), reuse it and skip this step.
   - to judge a source, compare its row with `e5 top-40`/`e5 top-50` at similar "pairs per S1". A
     source that adds pairs without raising the share of true matches can be dropped from
     `EXTRA_SOURCES`.
+  - `e5 top-30 + number` (India) and `e5 top-30 + empty` / `+ empty_rev`: on submission 2's full train
+    buckets, the number key found about 13% of India's misses for ~4 pairs per S1, and the empty-address
+    search about 40% of the misses whose candidate has no address ("... empty-address candidates" column)
+    for ~2 pairs per S1.
   - India's "... Indian-script candidates" vs "... Latin-script candidates": on the test bed, 17% of
     Indian-script true matches were missing from the buckets vs 4% for Latin script. If the gap is
     still large at full size, a better transliteration (e.g. the IndicXlit plan in
@@ -80,14 +84,15 @@ version 1 did), reuse it and skip this step.
 - **Accelerator:** not needed (CPU work). **Internet:** on, to install `anyascii` if missing.
 - **Run all.**
 - **What it does:**
-  1. Trains LightGBM on 200,000 train S1 per country with 82 features each.
+  1. Trains LightGBM on 200,000 train S1 per country with 85 features each.
   2. Cross-validates and picks the cutoff.
   3. Predicts every test pair (30 e5 candidates per S1 plus the extra ones) and writes both files.
   4. Checks the files.
 - **Time:** estimate 3–4 hours. Version 1 took about 1 hour for test prediction with 20 candidates
   and 44 features; version 2 has 50% more pairs and heavier features.
   Version 3 adds about 15% more pairs (the extra candidates) and the typo-tolerant features, roughly
-  30–40 minutes more (estimate).
+  30–40 minutes more (estimate). The number key and the empty-address search add about 15% more pairs in
+  India and 4% in the US.
 - **Check before downloading:**
   - **Cross-validation table:** the row "LightGBM p ≥ t + one owner (used for the submission)" is
     the expected score for India + US. Version 1 had 0.946; expect about 0.96.

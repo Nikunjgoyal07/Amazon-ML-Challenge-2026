@@ -59,7 +59,7 @@ text themselves.
 |---|---|---|
 | `buckets/train_India.parquet`, `buckets/train_US.parquet` | top 30 e5 candidates of every train S1, plus the extra candidates | ~70M rows in total (estimate) |
 | `buckets/test_France.parquet`, `buckets/test_India.parquet`, `buckets/test_US.parquet` | the same for every test S1 | ~57M rows in total (estimate) |
-| `bucket_recall_train.csv` | per country and candidate set (e5 top-20/30/40/50, e5 top-30 plus each extra source, everything saved): pairs per S1, share of true matches inside (overall, and split by whether the candidate is written in an Indian script or in Latin script), ceiling score | a few rows |
+| `bucket_recall_train.csv` | per country and candidate set (e5 top-20/30/40/50, e5 top-30 plus each extra source, everything saved): pairs per S1, share of true matches inside (overall, split by whether the candidate is written in an Indian script or in Latin script, and for candidates with an empty address), ceiling score | a few rows |
 | `manifest.json` | settings (model, text mode, top-k, extra sources), records, new pairs per source and timings per bucket file | |
 | `translit_wordmap.json` | the word map for Indian-script names ({"praivet": "private", …}, ~370 words), learned from the train true pairs; 03 (full) reads it | a few KB |
 
@@ -77,6 +77,9 @@ Bucket columns, one row per (S1, candidate):
 | `rev_rank` | rank of this S1 among the candidate's 5 best S1 (reverse search); empty = not among them |
 | `addr_key` | 1 = same house number and first street word |
 | `name_rank` | rank among the S1's 5 most similar names (character 3-grams); empty = not among them |
+| `num_key` | 1 = the addresses share a number and another word (the number key; India only by default) |
+| `empty_rank` | candidates with no address: rank among the S1's 2 most similar names of such candidates; empty = not among them |
+| `empty_rev_rank` | candidates with no address: rank of this S1 among the candidate's 3 most similar S1 names; empty = not among them |
 
 The embeddings themselves are **not** saved: ~18.6 GB for all 24M records, close to Kaggle's 20 GB
 output limit. Nothing downstream needs them.
@@ -122,14 +125,16 @@ The sample notebook embeds a diverse sample (default 100K per source; 500K was u
 | `faiss/s1_buckets.parquet`, `faiss/s1_buckets_exact.parquet`, `faiss/s1_buckets_ivfpq.parquet` | top-k buckets from exact search and (optionally) FAISS IVF-PQ |
 | `faiss/index_<country>.faiss`, `faiss/mean_<country>.npy` | the IVF-PQ index and the centering mean (IVF-PQ mode only) |
 | `faiss/bucket_recall.csv`, `faiss/metric_f05.csv` | true matches in the buckets; F0.5 table for simple rules |
+| `faiss/s1_buckets_all.parquet`, `faiss/extra_recall.csv` | (with `EXTRA_SEARCHES`) e5 top-30 + every extra search in 02 full's bucket format, for 03 (sample) with `BUCKETS=all` / `sub2`; e5 top-k vs e5 top-30 + each search (pairs per S1, true matches inside, ceiling) |
 
 ### `lgbm_matcher/<model>/<sample>/`, written by `03_lightgbm_matcher.ipynb`
 
-One folder per sample it was trained on (plus `_max<N>` when `MAX_S1` limits the S1).
+One folder per sample it was trained on (plus `_max<N>` when `MAX_S1` limits the S1, and `_all` / `_sub2` for
+those `BUCKETS`; `BUCKETS=e5` keeps the plain name).
 
 | File | Content |
 |---|---|
-| `lgbm_matcher.txt`, `matcher_config.json` | model and settings trained on the sample buckets (44 features) |
+| `lgbm_matcher.txt`, `matcher_config.json` | model and settings trained on the sample buckets (44 features, 51 with `BUCKETS=all` / `sub2`), candidates per S1 |
 | `oof_pairs.parquet`, `metric_f05.csv`, `feature_importance.csv` | out-of-fold predictions, score table, importance |
 | `sample_matching_results.tsv` | out-of-fold matches of the sampled S1, in the submission format |
 
