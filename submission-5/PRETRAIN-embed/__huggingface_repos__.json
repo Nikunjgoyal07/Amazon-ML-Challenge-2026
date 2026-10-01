@@ -1,0 +1,1 @@
+{"repos": [{"repoId": "intfloat/multilingual-e5-small", "repoType": "model", "commitHash": "614241f622f53c4eeff9890bdc4f31cfecc418b3", "filePaths": ["special_tokens_map.json", "config.json", "README.md", "1_Pooling/config.json", "modules.json", "sentence_bert_config.json", "tokenizer.json", "tokenizer_config.json", "model.safetensors"]}]}

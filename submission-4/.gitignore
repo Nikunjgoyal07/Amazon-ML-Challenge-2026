@@ -1,0 +1,9 @@
+processed/
+*.executed.ipynb
+__pycache__/
+.ipynb_checkpoints/
+*.tsv
+submission-*/*
+!submission-*/*.ipynb
+model_comparison*.csv
+/submission/

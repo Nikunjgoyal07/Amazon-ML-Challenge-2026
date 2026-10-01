@@ -1,0 +1,241 @@
+{
+ "model_dir": "/kaggle/working/er_embed/er-embed-small",
+ "mlm_dir": "/kaggle/working/er_embed/er-embed-small-mlm",
+ "quick_run": false,
+ "use_test_text": true,
+ "vocab_size": 32000,
+ "hidden": 384,
+ "layers": 6,
+ "heads": 6,
+ "max_len": 128,
+ "tokenizer_texts": 3000000,
+ "mlm_texts_per_country": 4000000,
+ "mlm_epochs": 1.0,
+ "mlm_batch": 1024,
+ "mlm_lr": 0.0005,
+ "pairs_per_country": 1000000,
+ "hard_neg_top": 10,
+ "noisy_pairs_per_country": 500000,
+ "script_pairs": 300000,
+ "cl_epochs": 1.0,
+ "cl_batch": 512,
+ "cl_lr": 0.0001,
+ "scale": 20.0,
+ "prefix": "query: ",
+ "lgbm_seed": 42,
+ "lgbm_train_s1_per_country": 200000,
+ "pairs": [
+  {
+   "country": "France",
+   "records": 1694445,
+   "corpus texts": 1603808,
+   "noisy": 500000,
+   "script": 9,
+   "seconds": 19
+  },
+  {
+   "country": "India",
+   "records": 10544085,
+   "corpus texts": 13615026,
+   "noisy": 500000,
+   "script": 300000,
+   "matches": 1000000,
+   "hard negative from the bucket": 1.0,
+   "script_matches": 300000,
+   "seconds": 275
+  },
+  {
+   "country": "US",
+   "records": 11990643,
+   "corpus texts": 11681200,
+   "noisy": 500000,
+   "script": 0,
+   "matches": 1000000,
+   "hard negative from the bucket": 1.0,
+   "script_matches": 0,
+   "seconds": 237
+  }
+ ],
+ "stage1": {
+  "minutes": 21.0,
+  "processes": 2,
+  "steps": 9378,
+  "texts": 9603808
+ },
+ "stage2": {
+  "minutes": 89.1,
+  "processes": 1,
+  "rows_per_gpu": 512,
+  "loss": "CachedMultipleNegativesRankingLoss",
+  "gather_across_gpus": false
+ },
+ "compare_models": [
+  "intfloat/multilingual-e5-small"
+ ],
+ "word_map_words": 370,
+ "processed_dir": "/kaggle/input/notebooks/trezwakaxa/data-preprocessing-submission3/processed",
+ "bucket_dir": "/kaggle/input/notebooks/trezwakaxa/embedding-submission3/embeddings_full/multilingual-e5-small/buckets",
+ "sentence_transformers": "5.4.1",
+ "eval": [
+  {
+   "country": "India",
+   "S1": "unseen",
+   "true record": "all",
+   "model": "multilingual-e5-small",
+   "true pairs": 73654,
+   "recall@5": 0.836,
+   "recall@10": 0.9219,
+   "recall@30": 0.9467
+  },
+  {
+   "country": "India",
+   "S1": "unseen",
+   "true record": "Indian-script name",
+   "model": "multilingual-e5-small",
+   "true pairs": 13249,
+   "recall@5": 0.8232,
+   "recall@10": 0.9063,
+   "recall@30": 0.9385
+  },
+  {
+   "country": "India",
+   "S1": "unseen",
+   "true record": "empty address",
+   "model": "multilingual-e5-small",
+   "true pairs": 2836,
+   "recall@5": 0.1664,
+   "recall@10": 0.3505,
+   "recall@30": 0.4905
+  },
+  {
+   "country": "India",
+   "S1": "unseen",
+   "true record": "Latin, with address",
+   "model": "multilingual-e5-small",
+   "true pairs": 57590,
+   "recall@5": 0.8717,
+   "recall@10": 0.9534,
+   "recall@30": 0.9708
+  },
+  {
+   "country": "India",
+   "S1": "seen",
+   "true record": "all",
+   "model": "multilingual-e5-small",
+   "true pairs": 9506,
+   "recall@5": 0.8354,
+   "recall@10": 0.9201,
+   "recall@30": 0.9446
+  },
+  {
+   "country": "India",
+   "S1": "seen",
+   "true record": "Indian-script name",
+   "model": "multilingual-e5-small",
+   "true pairs": 1737,
+   "recall@5": 0.8261,
+   "recall@10": 0.905,
+   "recall@30": 0.9378
+  },
+  {
+   "country": "India",
+   "S1": "seen",
+   "true record": "empty address",
+   "model": "multilingual-e5-small",
+   "true pairs": 353,
+   "recall@5": 0.17,
+   "recall@10": 0.3853,
+   "recall@30": 0.4958
+  },
+  {
+   "country": "India",
+   "S1": "seen",
+   "true record": "Latin, with address",
+   "model": "multilingual-e5-small",
+   "true pairs": 7417,
+   "recall@5": 0.8691,
+   "recall@10": 0.9489,
+   "recall@30": 0.9674
+  },
+  {
+   "country": "India",
+   "S1": "unseen",
+   "true record": "all",
+   "model": "er-embed-small",
+   "true pairs": 73654,
+   "recall@5": 0.9272,
+   "recall@10": 0.9872,
+   "recall@30": 0.9947
+  },
+  {
+   "country": "India",
+   "S1": "unseen",
+   "true record": "Indian-script name",
+   "model": "er-embed-small",
+   "true pairs": 13249,
+   "recall@5": 0.9622,
+   "recall@10": 0.9981,
+   "recall@30": 0.9998
+  },
+  {
+   "country": "India",
+   "S1": "unseen",
+   "true record": "empty address",
+   "model": "er-embed-small",
+   "true pairs": 2836,
+   "recall@5": 0.6287,
+   "recall@10": 0.9111,
+   "recall@30": 0.969
+  },
+  {
+   "country": "India",
+   "S1": "unseen",
+   "true record": "Latin, with address",
+   "model": "er-embed-small",
+   "true pairs": 57590,
+   "recall@5": 0.9337,
+   "recall@10": 0.9885,
+   "recall@30": 0.9948
+  },
+  {
+   "country": "India",
+   "S1": "seen",
+   "true record": "all",
+   "model": "er-embed-small",
+   "true pairs": 9506,
+   "recall@5": 0.931,
+   "recall@10": 0.9887,
+   "recall@30": 0.9963
+  },
+  {
+   "country": "India",
+   "S1": "seen",
+   "true record": "Indian-script name",
+   "model": "er-embed-small",
+   "true pairs": 1737,
+   "recall@5": 0.966,
+   "recall@10": 0.9994,
+   "recall@30": 1.0
+  },
+  {
+   "country": "India",
+   "S1": "seen",
+   "true record": "empty address",
+   "model": "er-embed-small",
+   "true pairs": 353,
+   "recall@5": 0.5977,
+   "recall@10": 0.8924,
+   "recall@30": 0.9632
+  },
+  {
+   "country": "India",
+   "S1": "seen",
+   "true record": "Latin, with address",
+   "model": "er-embed-small",
+   "true pairs": 7417,
+   "recall@5": 0.9387,
+   "recall@10": 0.9908,
+   "recall@30": 0.997
+  }
+ ]
+}

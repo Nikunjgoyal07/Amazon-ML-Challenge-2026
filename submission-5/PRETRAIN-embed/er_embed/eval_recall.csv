@@ -1,0 +1,17 @@
+country,S1,true record,model,true pairs,recall@5,recall@10,recall@30
+India,unseen,all,multilingual-e5-small,73654,0.836,0.9219,0.9467
+India,unseen,Indian-script name,multilingual-e5-small,13249,0.8232,0.9063,0.9385
+India,unseen,empty address,multilingual-e5-small,2836,0.1664,0.3505,0.4905
+India,unseen,"Latin, with address",multilingual-e5-small,57590,0.8717,0.9534,0.9708
+India,seen,all,multilingual-e5-small,9506,0.8354,0.9201,0.9446
+India,seen,Indian-script name,multilingual-e5-small,1737,0.8261,0.905,0.9378
+India,seen,empty address,multilingual-e5-small,353,0.17,0.3853,0.4958
+India,seen,"Latin, with address",multilingual-e5-small,7417,0.8691,0.9489,0.9674
+India,unseen,all,er-embed-small,73654,0.9272,0.9872,0.9947
+India,unseen,Indian-script name,er-embed-small,13249,0.9622,0.9981,0.9998
+India,unseen,empty address,er-embed-small,2836,0.6287,0.9111,0.969
+India,unseen,"Latin, with address",er-embed-small,57590,0.9337,0.9885,0.9948
+India,seen,all,er-embed-small,9506,0.931,0.9887,0.9963
+India,seen,Indian-script name,er-embed-small,1737,0.966,0.9994,1.0
+India,seen,empty address,er-embed-small,353,0.5977,0.8924,0.9632
+India,seen,"Latin, with address",er-embed-small,7417,0.9387,0.9908,0.997
