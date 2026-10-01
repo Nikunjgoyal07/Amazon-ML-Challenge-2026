@@ -2,7 +2,9 @@
 
 ![header](https://capsule-render.vercel.app/api?type=waving&color=gradient&height=200&section=header&text=Amazon+ML+Challenge+2026&fontSize=48&desc=Business+Entity+Resolution+%2B+S1+%E2%86%92+S2%2FS3+linkage&descAlignY=58)
 
-[![typing](https://readme-typing-svg.herokuapp.com?font=Fira+Code&pause=1500&color=4B8BFF&center=true&vCenter=true&width=760&height=120&lines=Recall+first.+Then+precision.+Then+global+consistency.;Lexical+keys+%E2%86%92+dense+e5+%E2%86%92+our+own+er--embed--small;A+GPU--free+baseline+and+a+full+Kaggle+pipeline.;public+F0.5+0.580+%E2%86%92+0.935)](https://github.com/Nikunjgoyal07/Amazon-ML-Challenge-2026)
+[![typing](https://readme-typing-svg.demolab.com?font=Fira+Code&size=20&pause=1500&color=4B8BFF&center=true&vCenter=true&multiline=true&width=760&height=140&lines=Recall+first.+Then+precision.+Then+global+consistency.;Lexical+keys+%E2%86%92+dense+e5+%E2%86%92+our+own+er--embed--small;A+GPU--free+baseline+and+a+full+Kaggle+pipeline.;public+F0.5+0.580+%E2%86%92+0.935)](https://github.com/Nikunjgoyal07/Amazon-ML-Challenge-2026)
+
+<br>
 
 [![Python](https://img.shields.io/badge/Python-3.12%20%7C%203.14-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.14-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)](https://pytorch.org/)

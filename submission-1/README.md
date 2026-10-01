@@ -2,7 +2,9 @@
 
 ![header](https://capsule-render.vercel.app/api?type=waving&color=gradient&height=170&section=header&text=Submission-1&fontSize=44&desc=CPU%20lexical-blocking%20baseline%20%C2%B7%20F0.5%200.58&descAlignY=62)
 
-[![typing](https://readme-typing-svg.herokuapp.com?font=Fira+Code&pause=1200&color=0066FF&center=true&vCenter=true&width=620&lines=6-key+lexical+blocking+%2B+LightGBM;No+GPU.+No+embeddings.+35+minutes.;Polars+end-to-end%2C+constant+memory)](https://github.com/Nikunjgoyal07/Amazon-ML-Challenge-2026)
+[![typing](https://readme-typing-svg.demolab.com?font=Fira+Code&size=20&pause=1200&color=0066FF&center=true&vCenter=true&multiline=true&width=620&height=115&lines=6-key+lexical+blocking+%2B+LightGBM;No+GPU.+No+embeddings.+35+minutes.;Polars+end-to-end%2C+constant+memory)](https://github.com/Nikunjgoyal07/Amazon-ML-Challenge-2026)
+
+<br>
 
 ![Python](https://img.shields.io/badge/Python-3.14-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![Polars](https://img.shields.io/badge/Polars-1.44-CD792C?style=for-the-badge&logo=polkadot&logoColor=white)

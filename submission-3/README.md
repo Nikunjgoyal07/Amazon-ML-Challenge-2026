@@ -2,7 +2,9 @@
 
 ![header](https://capsule-render.vercel.app/api?type=waving&color=gradient&height=170&section=header&text=Submission-3&fontSize=44&desc=hybrid+transliteration+track+%C2%B7+IndicXlit+%2B+anyascii&descAlignY=62)
 
-[![typing](https://readme-typing-svg.herokuapp.com?font=Fira+Code&pause=1200&color=0066FF&center=true&vCenter=true&width=640&lines=Fix+the+weakest+slice%3A+Indian-script+names;Hybrid+transliteration%2C+acceptance-gated;Anchored+sampling+for+honest+recall)](https://github.com/Nikunjgoyal07/Amazon-ML-Challenge-2026)
+[![typing](https://readme-typing-svg.demolab.com?font=Fira+Code&size=20&pause=1200&color=0066FF&center=true&vCenter=true&multiline=true&width=640&height=115&lines=Fix+the+weakest+slice%3A+Indian-script+names;Hybrid+transliteration%2C+acceptance-gated;Anchored+sampling+for+honest+recall)](https://github.com/Nikunjgoyal07/Amazon-ML-Challenge-2026)
+
+<br>
 
 ![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![Polars](https://img.shields.io/badge/Polars-1.44-CD792C?style=for-the-badge&logo=polkadot&logoColor=white)

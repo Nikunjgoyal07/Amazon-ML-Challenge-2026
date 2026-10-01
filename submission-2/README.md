@@ -2,7 +2,9 @@
 
 ![header](https://capsule-render.vercel.app/api?type=waving&color=gradient&height=170&section=header&text=Submission-2&fontSize=44&desc=e5+embeddings+%2B+LightGBM+matcher+%C2%B7+public+F0.5+0.935&descAlignY=62)
 
-[![typing](https://readme-typing-svg.herokuapp.com?font=Fira+Code&pause=1200&color=0066FF&center=true&vCenter=true&width=640&lines=Dense+retrieval+meets+gradient+boosting;Top-30+buckets+%2B+reverse+%2B+address+%2B+name;61-feature+LightGBM+%2B+one-owner+rule)](https://github.com/Nikunjgoyal07/Amazon-ML-Challenge-2026)
+[![typing](https://readme-typing-svg.demolab.com?font=Fira+Code&size=20&pause=1200&color=0066FF&center=true&vCenter=true&multiline=true&width=640&height=115&lines=Dense+retrieval+meets+gradient+boosting;Top-30+buckets+%2B+reverse+%2B+address+%2B+name;61-feature+LightGBM+%2B+one-owner+rule)](https://github.com/Nikunjgoyal07/Amazon-ML-Challenge-2026)
+
+<br>
 
 ![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![PyTorch](https://img.shields.io/badge/PyTorch-2.14-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)

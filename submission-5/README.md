@@ -2,7 +2,9 @@
 
 ![header](https://capsule-render.vercel.app/api?type=waving&color=gradient&height=170&section=header&text=Submission-5&fontSize=44&desc=er-embed-small+%C2%B7+embedding+model+trained+from+scratch&descAlignY=62)
 
-[![typing](https://readme-typing-svg.herokuapp.com?font=Fira+Code&pause=1200&color=0066FF&center=true&vCenter=true&width=640&lines=Our+own+multilingual+embedding+model;WordPiece+32k+%2B+MLM+%2B+contrastive;recall%4010+0.92+%E2%86%92+0.99+on+hard+slices)](https://github.com/Nikunjgoyal07/Amazon-ML-Challenge-2026)
+[![typing](https://readme-typing-svg.demolab.com?font=Fira+Code&size=20&pause=1200&color=0066FF&center=true&vCenter=true&multiline=true&width=640&height=115&lines=Our+own+multilingual+embedding+model;WordPiece+32k+%2B+MLM+%2B+contrastive;recall%4010+0.92+%E2%86%92+0.99+on+hard+slices)](https://github.com/Nikunjgoyal07/Amazon-ML-Challenge-2026)
+
+<br>
 
 ![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![PyTorch](https://img.shields.io/badge/PyTorch-2.10-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)
