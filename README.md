@@ -1,8 +1,10 @@
 <div align="center">
 
-![header](https://capsule-render.vercel.app/api?type=waving&color=gradient&height=200&section=header&text=Amazon+ML+Challenge+2026&fontSize=48&desc=Business+Entity+Resolution+%2B+S1+%E2%86%92+S2%2FS3+linkage&descAlignY=58)
+![header](https://capsule-render.vercel.app/api?type=waving&color=gradient&height=250&section=header&text=Amazon+ML+Challenge+2026&fontSize=46&fontAlignY=35&desc=Business+Entity+Resolution+%2B+S1+%E2%86%92+S2%2FS3+linkage&descSize=22&descAlignY=68)
 
-[![typing](https://readme-typing-svg.demolab.com?font=Fira+Code&size=20&pause=1500&color=4B8BFF&center=true&vCenter=true&multiline=true&width=760&height=140&lines=Recall+first.+Then+precision.+Then+global+consistency.;Lexical+keys+%E2%86%92+dense+e5+%E2%86%92+our+own+er--embed--small;A+GPU--free+baseline+and+a+full+Kaggle+pipeline.;public+F0.5+0.580+%E2%86%92+0.935)](https://github.com/Nikunjgoyal07/Amazon-ML-Challenge-2026)
+<br>
+
+[![typing](https://readme-typing-svg.demolab.com?font=Fira+Code&size=20&duration=2500&pause=500&color=4B8BFF&center=true&vCenter=true&multiline=true&width=760&height=140&lines=Recall+first.+Then+precision.+Then+global+consistency.;Lexical+keys+%E2%86%92+dense+e5+%E2%86%92+our+own+er--embed--small;A+GPU--free+baseline+and+a+full+Kaggle+pipeline.;public+F0.5+0.580+%E2%86%92+0.935)](https://github.com/Nikunjgoyal07/Amazon-ML-Challenge-2026)
 
 <br>
 
@@ -17,7 +19,7 @@
 [![Metric](https://img.shields.io/badge/Metric-macro_F0.5_per_S1-FF6B35?style=for-the-badge)](docs/RESULTS_EXPLAINED.md)
 [![Best](https://img.shields.io/badge/Kaggle_public-0.935-FFD700?style=for-the-badge)](docs/SUBMISSION_STEPS.md)
 
-[![Skill Icons](https://skillicons.dev/icons?i=python,pycharm,docker,git,github,githubactions,jupyter,kaggle,sklearn,fastapi&theme=light)](https://skillicons.dev)
+[![Skill Icons](https://skillicons.dev/icons?i=python,pytorch,sklearn,git,github&theme=light)](https://skillicons.dev)
 
 </div>
 
@@ -198,10 +200,9 @@ Full settings, environment variables, Kaggle attach instructions and the OOM/slo
 <a href="https://pytorch.org/"><img src="https://cdn.simpleicons.org/pytorch/EE4C2C" width="42" height="42" alt="PyTorch"></a>
 <a href="https://huggingface.co/"><img src="https://cdn.simpleicons.org/huggingface/FFD21E" width="42" height="42" alt="Hugging Face"></a>
 <a href="https://pola.rs/"><img src="https://cdn.simpleicons.org/polars/CD792C" width="42" height="42" alt="Polars"></a>
-<a href="https://lightgbm.readthedocs.io/"><img src="https://cdn.simpleicons.org/lightgbm/6AA84F" width="42" height="42" alt="LightGBM"></a>
 <a href="https://scikit-learn.org/"><img src="https://cdn.simpleicons.org/scikitlearn/F7931E" width="42" height="42" alt="scikit-learn"></a>
-<a href="https://github.com/facebookresearch/faiss"><img src="https://cdn.simpleicons.org/faiss/00A67E" width="42" height="42" alt="FAISS"></a>
-<a href="https://www.rapidfuzz.com/"><img src="https://cdn.simpleicons.org/python/FF6B6B" width="42" height="42" alt="RapidFuzz"></a>
+<a href="https://numpy.org/"><img src="https://cdn.simpleicons.org/numpy/013243" width="42" height="42" alt="NumPy"></a>
+<a href="https://pandas.pydata.org/"><img src="https://cdn.simpleicons.org/pandas/150458" width="42" height="42" alt="pandas"></a>
 <a href="https://kaggle.com/"><img src="https://cdn.simpleicons.org/kaggle/20BEFF" width="42" height="42" alt="Kaggle"></a>
 <a href="https://jupyter.org/"><img src="https://cdn.simpleicons.org/jupyter/F37626" width="42" height="42" alt="Jupyter"></a>
 

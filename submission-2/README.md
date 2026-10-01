@@ -1,8 +1,10 @@
 <div align="center">
 
-![header](https://capsule-render.vercel.app/api?type=waving&color=gradient&height=170&section=header&text=Submission-2&fontSize=44&desc=e5+embeddings+%2B+LightGBM+matcher+%C2%B7+public+F0.5+0.935&descAlignY=62)
+![header](https://capsule-render.vercel.app/api?type=waving&color=gradient&height=230&section=header&text=Submission-2&fontSize=42&fontAlignY=34&desc=e5+embeddings+%2B+LightGBM+matcher+%C2%B7+public+F0.5+0.935&descSize=20&descAlignY=70)
 
-[![typing](https://readme-typing-svg.demolab.com?font=Fira+Code&size=20&pause=1200&color=0066FF&center=true&vCenter=true&multiline=true&width=640&height=115&lines=Dense+retrieval+meets+gradient+boosting;Top-30+buckets+%2B+reverse+%2B+address+%2B+name;61-feature+LightGBM+%2B+one-owner+rule)](https://github.com/Nikunjgoyal07/Amazon-ML-Challenge-2026)
+<br>
+
+[![typing](https://readme-typing-svg.demolab.com?font=Fira+Code&size=20&duration=2500&pause=500&color=0066FF&center=true&vCenter=true&multiline=true&width=640&height=115&lines=Dense+retrieval+meets+gradient+boosting;Top-30+buckets+%2B+reverse+%2B+address+%2B+name;61-feature+LightGBM+%2B+one-owner+rule)](https://github.com/Nikunjgoyal07/Amazon-ML-Challenge-2026)
 
 <br>
 
@@ -91,8 +93,6 @@ Settings live in each notebook's first cell and can also be passed as environmen
 ---
 
 <div align="center">
-
-[![Repo Card](https://github-readme-stats.vercel.app/api/pin/?username=Nikunjgoyal07&repo=Amazon-ML-Challenge-2026&theme=tokyonight)](https://github.com/Nikunjgoyal07/Amazon-ML-Challenge-2026)
 
 *Models: `multilingual-e5-small` (MIT) · LightGBM (MIT) · Libraries: sentence-transformers (Apache-2.0), RapidFuzz (MIT), anyascii (ISC).*
 

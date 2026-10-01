@@ -1,8 +1,10 @@
 <div align="center">
 
-![header](https://capsule-render.vercel.app/api?type=waving&color=gradient&height=170&section=header&text=Submission-1&fontSize=44&desc=CPU%20lexical-blocking%20baseline%20%C2%B7%20F0.5%200.58&descAlignY=62)
+![header](https://capsule-render.vercel.app/api?type=waving&color=gradient&height=230&section=header&text=Submission-1&fontSize=42&fontAlignY=34&desc=CPU%20lexical-blocking%20baseline%20%C2%B7%20F0.5%200.58&descSize=20&descAlignY=70)
 
-[![typing](https://readme-typing-svg.demolab.com?font=Fira+Code&size=20&pause=1200&color=0066FF&center=true&vCenter=true&multiline=true&width=620&height=115&lines=6-key+lexical+blocking+%2B+LightGBM;No+GPU.+No+embeddings.+35+minutes.;Polars+end-to-end%2C+constant+memory)](https://github.com/Nikunjgoyal07/Amazon-ML-Challenge-2026)
+<br>
+
+[![typing](https://readme-typing-svg.demolab.com?font=Fira+Code&size=20&duration=2500&pause=500&color=0066FF&center=true&vCenter=true&multiline=true&width=620&height=115&lines=6-key+lexical+blocking+%2B+LightGBM;No+GPU.+No+embeddings.+35+minutes.;Polars+end-to-end%2C+constant+memory)](https://github.com/Nikunjgoyal07/Amazon-ML-Challenge-2026)
 
 <br>
 
@@ -14,7 +16,7 @@
 ![CPU only](https://img.shields.io/badge/Hardware-CPU_only-orange?style=for-the-badge&logo=linux&logoColor=white)
 ![License](https://img.shields.io/badge/Libraries-MIT%2FISC%2FApache--2.0-green?style=for-the-badge)
 
-[![Skill Icons](https://skillicons.dev/icons?i=python,git,vscode&theme=light)](https://skillicons.dev)
+[![Skill Icons](https://skillicons.dev/icons?i=python,git&theme=light)](https://skillicons.dev)
 
 </div>
 
@@ -138,8 +140,6 @@ python3 utils/validate_submission.py --matching output/matching_results.tsv \
 ---
 
 <div align="center">
-
-[![Repo Card](https://github-readme-stats.vercel.app/api/pin/?username=Nikunjgoyal07&repo=Amazon-ML-Challenge-2026&theme=tokyonight)](https://github.com/Nikunjgoyal07/Amazon-ML-Challenge-2026)
 
 *Libraries: LightGBM (MIT) · RapidFuzz (MIT) · Polars (MIT) · scikit-learn · SciPy — all within the competition's license rules.*
 

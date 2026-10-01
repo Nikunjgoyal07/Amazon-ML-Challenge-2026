@@ -1,8 +1,10 @@
 <div align="center">
 
-![header](https://capsule-render.vercel.app/api?type=waving&color=gradient&height=170&section=header&text=Submission-3&fontSize=44&desc=hybrid+transliteration+track+%C2%B7+IndicXlit+%2B+anyascii&descAlignY=62)
+![header](https://capsule-render.vercel.app/api?type=waving&color=gradient&height=230&section=header&text=Submission-3&fontSize=42&fontAlignY=34&desc=hybrid+transliteration+track+%C2%B7+IndicXlit+%2B+anyascii&descSize=20&descAlignY=70)
 
-[![typing](https://readme-typing-svg.demolab.com?font=Fira+Code&size=20&pause=1200&color=0066FF&center=true&vCenter=true&multiline=true&width=640&height=115&lines=Fix+the+weakest+slice%3A+Indian-script+names;Hybrid+transliteration%2C+acceptance-gated;Anchored+sampling+for+honest+recall)](https://github.com/Nikunjgoyal07/Amazon-ML-Challenge-2026)
+<br>
+
+[![typing](https://readme-typing-svg.demolab.com?font=Fira+Code&size=20&duration=2500&pause=500&color=0066FF&center=true&vCenter=true&multiline=true&width=640&height=115&lines=Fix+the+weakest+slice%3A+Indian-script+names;Hybrid+transliteration%2C+acceptance-gated;Anchored+sampling+for+honest+recall)](https://github.com/Nikunjgoyal07/Amazon-ML-Challenge-2026)
 
 <br>
 
@@ -86,8 +88,6 @@ XLIT_DIR=/path/to/indicxlit-assets  # unset/empty => hybrid disabled, nothing ch
 ---
 
 <div align="center">
-
-[![Repo Card](https://github-readme-stats.vercel.app/api/pin/?username=Nikunjgoyal07&repo=Amazon-ML-Challenge-2026&theme=tokyonight)](https://github.com/Nikunjgoyal07/Amazon-ML-Challenge-2026)
 
 *Engine sources: IndicXlit (fairseq-based) · anyascii (ISC) · Polars (MIT).*
 

@@ -1,8 +1,10 @@
 <div align="center">
 
-![header](https://capsule-render.vercel.app/api?type=waving&color=gradient&height=170&section=header&text=Submission-4&fontSize=44&desc=full+v3+pipeline+%C2%B7+85+features+%C2%B7+5+searches+%C2%B7+word+map&descAlignY=62)
+![header](https://capsule-render.vercel.app/api?type=waving&color=gradient&height=230&section=header&text=Submission-4&fontSize=42&fontAlignY=34&desc=full+v3+pipeline+%C2%B7+85+features+%C2%B7+5+searches+%C2%B7+word+map&descSize=20&descAlignY=70)
 
-[![typing](https://readme-typing-svg.demolab.com?font=Fira+Code&size=20&pause=1200&color=0066FF&center=true&vCenter=true&multiline=true&width=660&height=115&lines=The+complete+e5+%2B+LightGBM+system%2C+evolved;85+features+%C2%B7+5+candidate+searches+%C2%B7+370-word+map;Test-bed+ceiling+0.967+%E2%86%92+0.974)](https://github.com/Nikunjgoyal07/Amazon-ML-Challenge-2026)
+<br>
+
+[![typing](https://readme-typing-svg.demolab.com?font=Fira+Code&size=20&duration=2500&pause=500&color=0066FF&center=true&vCenter=true&multiline=true&width=660&height=115&lines=The+complete+e5+%2B+LightGBM+system%2C+evolved;85+features+%C2%B7+5+candidate+searches+%C2%B7+370-word+map;Test-bed+ceiling+0.967+%E2%86%92+0.974)](https://github.com/Nikunjgoyal07/Amazon-ML-Challenge-2026)
 
 <br>
 
@@ -105,8 +107,6 @@ Design docs: `docs/ARCHITECTURE.md` (method) · `docs/SUBMISSION_STEPS.md` (runb
 ---
 
 <div align="center">
-
-[![Repo Card](https://github-readme-stats.vercel.app/api/pin/?username=Nikunjgoyal07&repo=Amazon-ML-Challenge-2026&theme=tokyonight)](https://github.com/Nikunjgoyal07/Amazon-ML-Challenge-2026)
 
 *Models: `multilingual-e5-small` (MIT) · LightGBM (MIT) · FAISS (sample compare) · Libraries: sentence-transformers (Apache-2.0), RapidFuzz (MIT), anyascii (ISC).*
 

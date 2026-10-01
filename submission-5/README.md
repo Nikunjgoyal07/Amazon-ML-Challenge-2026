@@ -1,8 +1,10 @@
 <div align="center">
 
-![header](https://capsule-render.vercel.app/api?type=waving&color=gradient&height=170&section=header&text=Submission-5&fontSize=44&desc=er-embed-small+%C2%B7+embedding+model+trained+from+scratch&descAlignY=62)
+![header](https://capsule-render.vercel.app/api?type=waving&color=gradient&height=230&section=header&text=Submission-5&fontSize=42&fontAlignY=34&desc=er-embed-small+%C2%B7+embedding+model+trained+from+scratch&descSize=20&descAlignY=70)
 
-[![typing](https://readme-typing-svg.demolab.com?font=Fira+Code&size=20&pause=1200&color=0066FF&center=true&vCenter=true&multiline=true&width=640&height=115&lines=Our+own+multilingual+embedding+model;WordPiece+32k+%2B+MLM+%2B+contrastive;recall%4010+0.92+%E2%86%92+0.99+on+hard+slices)](https://github.com/Nikunjgoyal07/Amazon-ML-Challenge-2026)
+<br>
+
+[![typing](https://readme-typing-svg.demolab.com?font=Fira+Code&size=20&duration=2500&pause=500&color=0066FF&center=true&vCenter=true&multiline=true&width=640&height=115&lines=Our+own+multilingual+embedding+model;WordPiece+32k+%2B+MLM+%2B+contrastive;recall%4010+0.92+%E2%86%92+0.99+on+hard+slices)](https://github.com/Nikunjgoyal07/Amazon-ML-Challenge-2026)
 
 <br>
 
@@ -88,8 +90,6 @@ Retraining needs: 01's `processed/` (`FULL_RUN=true`) · `train_ground_truth.tsv
 ---
 
 <div align="center">
-
-[![Repo Card](https://github-readme-stats.vercel.app/api/pin/?username=Nikunjgoyal07&repo=Amazon-ML-Challenge-2026&theme=tokyonight)](https://github.com/Nikunjgoyal07/Amazon-ML-Challenge-2026)
 
 *Stack: PyTorch · Transformers · sentence-transformers 5.4.1 · tokenizers (WordPiece) · datasets · RapidFuzz · anyascii (ISC). All models trained from this data; comparison download `multilingual-e5-small` (MIT) is eval-only.*
 
