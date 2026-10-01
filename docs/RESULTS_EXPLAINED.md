@@ -1,10 +1,11 @@
 # Understanding the results of the matcher notebook
 
-This page explains every score that `03_lightgbm_matcher.ipynb` prints: what each number means,
+This page explains every score that `03_full_lightgbm_submission.ipynb` prints: what each number means,
 where it comes from, and how to read it. No machine-learning background is needed.
 
-The example numbers come from a test run on a small sample (100,000 records per source). Your Kaggle
-run will show different numbers, but they mean the same things.
+The example numbers come from an early run of the matcher on a small sample (100,000 records per source, 44
+features, 5 groups). 03 full prints the same tables, with 85 features and 3 groups, at full size. Your numbers
+will differ, but they mean the same things.
 
 ---
 
@@ -67,8 +68,8 @@ whether it has 1 match or 10.
 - We only have answers for the **training** data. The competition's ground-truth file tells us
   which S2/S3 records belong to each training S1.
 - The notebook predicts matches for those training S1 and checks them against the answers.
-- **No cheating:** the S1 records are split into 5 groups. Each group is predicted by a model
-  trained on the other 4, so no business is ever predicted by a model that saw it during training.
+- **No cheating:** the S1 records are split into groups (3 in 03 full, 5 in the run shown here). Each group
+  is predicted by a model trained on the others, so no business is ever predicted by a model that saw it during training.
   This makes the score behave like a score on new data.
 
 ---
@@ -112,7 +113,7 @@ similar names). It is weakest in India (0.871), where names in Hindi or Tamil sc
 empty addresses make texts look less alike.
 
 **LightGBM, probability ≥ cutoff (0.968).**
-- LightGBM weighs 44 clues for each (S1, candidate) pair: name and address similarity, shared house
+- LightGBM weighs many clues for each (S1, candidate) pair (44 in this early run, 85 in 03 full): name and address similarity, shared house
   numbers and postcodes, how the candidate compares with other S1s, and more.
 - It outputs a probability that the pair is the same business. Candidates at or above the cutoff
   are kept.

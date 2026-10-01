@@ -17,7 +17,7 @@
 [![RapidFuzz](https://img.shields.io/badge/RapidFuzz-3.14-FF6B6B?style=for-the-badge)](https://github.com/rapidfuzz/RapidFuzz)
 [![anyascii](https://img.shields.io/badge/anyascii-ISC-4B8BFF?style=for-the-badge)](https://github.com/anyascii/anyascii)
 [![Metric](https://img.shields.io/badge/Metric-macro_F0.5_per_S1-FF6B35?style=for-the-badge)](docs/RESULTS_EXPLAINED.md)
-[![Best](https://img.shields.io/badge/Kaggle_public-0.935-FFD700?style=for-the-badge)](docs/SUBMISSION_STEPS.md)
+[![Best](https://img.shields.io/badge/Kaggle_public-0.967-FFD700?style=for-the-badge)](docs/SUBMISSION_STEPS.md)
 
 [![Skill Icons](https://skillicons.dev/icons?i=python,pytorch,sklearn,git,github&theme=light)](https://skillicons.dev)
 
@@ -38,9 +38,9 @@ This repo holds **five submissions**, each in its own folder with a **detailed R
 | Submission | Approach in one line | Reported score | Compute | Detailed write-up |
 |---|---|---|---|---|
 | **1** | CPU-only: 6-key lexical blocker → 8-feature LightGBM → per-country cutoffs | **0.580046** ⁽¹⁾ | 4 CPU, 35 min | **[submission-1/README.md](submission-1/README.md)** |
-| **2** | `multilingual-e5-small` top-30 dense retrieval + 3 extra searches → 61-feature LightGBM + one-owner | **0.935** (public) | 2×T4 + CPU | **[submission-2/README.md](submission-2/README.md)** |
+| **2** | `multilingual-e5-small` top-30 dense retrieval + 3 extra searches → 61-feature LightGBM + one-owner | **0.960** (public) | 2×T4 + CPU | **[submission-2/README.md](submission-2/README.md)** |
 | **3** | Research track: hybrid IndicXlit + anyascii transliteration engine, acceptance-gated, anchored sampling | experiment | Kaggle CPU | **[submission-3/README.md](submission-3/README.md)** |
-| **4** | Full current pipeline: word map, 5 candidate searches, **85 features**, France rethreshold | ceiling 0.974 | 2×T4 + CPU | **[submission-4/README.md](submission-4/README.md)** |
+| **4** | Full current pipeline: word map, 5 candidate searches, **85 features**, France rethreshold | **0.967** (public, France cutoff 0.9) | 2×T4 + CPU | **[submission-4/README.md](submission-4/README.md)** |
 | **5** | **`er-embed-small`: our own 23M embedding model** — 32k WordPiece, MLM + contrastive, trained on this data | recall@10 0.92→0.99 | 2×T4 | **[submission-5/README.md](submission-5/README.md)** ⁽²⁾ |
 
 ⁽¹⁾ as reported in that branch's own README (a lexical baseline; the later rows are public-leaderboard numbers, so they are not directly comparable).
@@ -108,7 +108,7 @@ flowchart TB
 
 **Why this shape?** The closest analogue (Foursquare Location Matching) was won by exactly this
 four-stage recipe: wide cheap candidate generation → boosted matcher → expensive re-ranker → graph
-consistency. See **[docs/RESEARCH_APPROACHES.md](docs/RESEARCH_APPROACHES.md)** for what we borrowed,
+consistency. See **[docs/research/RESEARCH_APPROACHES.md](docs/research/RESEARCH_APPROACHES.md)** for what we borrowed,
 what we skipped, and why.
 
 ---
@@ -126,12 +126,12 @@ what we skipped, and why.
 | 7 | **Transliteration + a learned word map.** Indian scripts → Latin, then a ~370-word map learned from train true pairs (`praivet→private`) | submissions 3, 4 | Hindi name similarity 76 → 91 |
 | 8 | **Train the retriever on the domain** — own tokenizer, MLM then contrastive | submission-5 | India recall@10 0.9219 → **0.9872**; empty-address 0.3505 → **0.9111** |
 | 9 | **Tune the cutoff, per country, for F0.5** — not for accuracy | all | France has no labels, so its cutoff comes from the leaderboard (`04_rethreshold`) |
-| 10 | **No country feature**, so the model transfers to unseen France | submission-4 | Cross-country check loses 0.04–0.06; France ≈ 0.88 |
+| 10 | **No country feature**, so the model transfers to unseen France | submission-4 | Cross-country check loses 0.04–0.06; France ≈ 0.90 (final) |
 
 ```mermaid
 flowchart LR
-    S1["sub-1<br/>lexical<br/>0.580"] --> S2["sub-2<br/>e5 + 61 feat<br/>0.935"]
-    S2 --> S4["sub-4<br/>+ word map, 5 searches<br/>85 feat"]
+    S1["sub-1<br/>lexical<br/>0.580"] --> S2["sub-2<br/>e5 + 61 feat<br/>0.960"]
+    S2 --> S4["sub-4<br/>+ word map, 5 searches<br/>85 feat · 0.967"]
     S2 -.-> S3["sub-3<br/>transliteration<br/>track"]
     S4 --> S5["sub-5<br/>er-embed-small<br/>recall 0.92→0.99"]
 ```
@@ -144,9 +144,10 @@ flowchart LR
 .
 ├── README.md                 ← you are here: overview + every submission's link
 ├── requirements.txt          pinned runtime for notebooks 01–04
-├── docs/                     method, runbook, results, file guide  (see below)
+├── docs/                     write-up, per-notebook code guides, runbook, experiments  (see below)
+├── experiments/              02b fine-tuned e5 · 02c own embedding model (maintained copy) · 03c model ensemble
 ├── submission-1/             CPU lexical baseline  → src/*.py
-├── submission-2/             first leaderboard submission (0.935)
+├── submission-2/             e5 + 61-feature LightGBM (public 0.960)
 ├── submission-3/             transliteration research track
 ├── submission-4/             full current pipeline + sample experiment twins
 └── submission-5/             er-embed-small from-scratch embedding model
@@ -154,17 +155,14 @@ flowchart LR
 
 | Document | Answers |
 |---|---|
-| **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** | How does the solution work, and why was it built this way? |
+| **[docs/SOLUTION_WRITEUP.md](docs/SOLUTION_WRITEUP.md)** | The whole solution: design, every iteration with its measurements, results, lessons |
+| **[docs/pipeline/](docs/pipeline/)** | How each pipeline notebook's code works, cell by cell, with every setting (incl. all 85 matcher features) |
 | **[docs/SUBMISSION_STEPS.md](docs/SUBMISSION_STEPS.md)** | How do I run a submission on Kaggle and validate it? |
 | **[docs/RESULTS_EXPLAINED.md](docs/RESULTS_EXPLAINED.md)** | What do the printed scores mean? |
 | **[docs/DATA_AND_OUTPUTS.md](docs/DATA_AND_OUTPUTS.md)** | What does each folder and output file contain? |
-| **[docs/FILES.md](docs/FILES.md)** | What does each file in the repo do? |
-| **[docs/PLAN.md](docs/PLAN.md)** | The original plan: options considered, data findings, constraints |
-| **[docs/RESEARCH_APPROACHES.md](docs/RESEARCH_APPROACHES.md)** | Literature + winning-solution survey, mapped onto our pipeline |
-| **[docs/buckets.md](docs/buckets.md)** | Blocking design: candidate sources, caps, recall measurements |
-| **[docs/modifs.md](docs/modifs.md)** | Change log with expected-vs-measured effect of every tweak |
-| **[docs/first-preprocessing.md](docs/first-preprocessing.md)** | What the preprocessing run found and did |
-| **[docs/hybridplanner.md](docs/hybridplanner.md)** | Transliteration ideas behind submission-3 |
+| **[docs/experiments/](docs/experiments/)** | Fine-tuned e5, our own embedding model (with its results), the model ensemble, IndicXlit |
+| **[docs/research/](docs/research/README.md)** | Literature survey, blocking catalogue, change reviews, transliteration plan, and what came of each |
+| **[docs/competition/](docs/competition/)** | Problem statement, guidelines, video transcript |
 | **[submission-5/WWMD.md](submission-5/WWMD.md)** | 📖 The embedding model explained in plain language |
 
 ---
@@ -214,7 +212,7 @@ scikit-learn · Jupyter
 
 </div>
 
-**License constraints honoured:** final models are MIT / Apache-2.0 and ≤ 8 parameters; `anyascii` (ISC),
+**License constraints honoured:** final models are MIT / Apache-2.0 and ≤ 8B parameters; `anyascii` (ISC),
 `RapidFuzz` (MIT), `LightGBM` (MIT), `polars` (MIT), `sentence-transformers` (Apache-2.0). No external
 data or APIs; France handled by a country-agnostic model, not by French training data.
 

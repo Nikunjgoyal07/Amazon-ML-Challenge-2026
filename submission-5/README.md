@@ -84,6 +84,7 @@ Retraining needs: 01's `processed/` (`FULL_RUN=true`) · `train_ground_truth.tsv
 
 ## 🧭 Limits
 
+* Stage 2 ran on one GPU: the two-GPU run timed out and the notebook fell back as designed (cause and fix: `docs/experiments/EMBEDDING_PRETRAINING.md`). The maintained notebook, with a leak check, is `experiments/02c_pretrain_embedding.ipynb`.
 * France has no labels — noisy copies are a guess at real noise; only the full pipeline + leaderboard can judge it.
 * If recall lands below e5: scale up either stage (`MLM_TEXTS_PER_COUNTRY`, `PAIRS_PER_COUNTRY`) or the model (`LAYERS=12`); rerun stage-2 alone from `MLM_MODEL=`.
 

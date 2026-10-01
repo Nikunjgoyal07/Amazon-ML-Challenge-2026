@@ -1,0 +1,27 @@
+# Root ignore rules. Submission folders may add their own (submission-1/.gitignore, submission-4/.gitignore).
+
+# data and large files: never commit
+*.tsv
+*.zip
+model_comparison*.csv
+
+# notebook and Python by-products
+*.executed.ipynb
+.ipynb_checkpoints/
+__pycache__/
+
+# local run outputs, when a notebook is run from the repo root
+/processed/
+/submission/
+/embeddings_full/
+/embeddings/
+/rethreshold/
+/e5_finetune/
+/er_embed/
+/xlit_model/
+
+# local copies of Kaggle outputs kept next to a submission's notebooks (data, not code)
+submission-*/results*/
+submission-*/final_results*/
+submission-*/logs*.txt
+submission-*-FR-fix/

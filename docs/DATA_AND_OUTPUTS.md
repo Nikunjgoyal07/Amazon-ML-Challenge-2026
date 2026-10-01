@@ -109,34 +109,18 @@ output limit. Nothing downstream needs them.
 
 ---
 
-## Sample experiments (not needed for a submission)
+## Experiments (not needed for a submission)
 
-### `embeddings/<model>/<sample>/`, written by `02_e5_embeddings.ipynb`
+The notebooks in `experiments/` write to their own folders (`/kaggle/working/...` on Kaggle):
 
-One folder per sample, named from its size (e.g. `sample_100k`, `sample_s1-50k_s2-200k_s3-200k_India`), so samples of different sizes sit side by side.
+| Folder | Written by | Content |
+|---|---|---|
+| `e5_finetune/` | `02b_finetune_e5.ipynb` | `e5-small-er/` (the fine-tuned model), `eval_recall.csv`, `train_log.csv`, `finetune_config.json`, `lgbm_train_s1.txt`, `finetune_s1.txt`, `train_e5.py`. See [EMBEDDING_FINETUNING.md](experiments/EMBEDDING_FINETUNING.md) |
+| `er_embed/` | `02c_pretrain_embedding.ipynb` | the first full run's copy is in `submission-5/PRETRAIN-embed/er_embed/`. `er-embed-small/` (the final model), `er-embed-small-mlm/` (stage-1 model and tokenizer), `eval_recall.csv`, `mlm_log.csv`, `contrastive_log.csv`, `embed_config.json`, `lgbm_train_s1.txt`, `matches_s1.txt`, the two training scripts. See [EMBEDDING_PRETRAINING.md](experiments/EMBEDDING_PRETRAINING.md) |
+| `submission/` | `03c_ensemble.ipynb` | as 03's, plus `model/model_comparison.csv`, one `p_<model>` column per model in `oof_pairs.parquet` and `test_probabilities/`, and `xgb_matcher.json`, `cat_matcher.cbm`, `nn_matcher.pt`. See [ENSEMBLE.md](experiments/ENSEMBLE.md) |
 
-The sample notebook embeds a diverse sample (default 100K per source; 500K was used on Kaggle).
-
-| File | Content |
-|---|---|
-| `s1_embeddings.npy`, `s2_embeddings.npy`, `s3_embeddings.npy` | fp16, one 384-number row per sampled record |
-| `s1_meta.parquet`, `s2_meta.parquet`, `s3_meta.parquet` | row-aligned: `entity_id`, split, country, `kind` (linked / no_match / singleton / …), true S1 link, diversity tags, embedded text |
-| `manifest.json`, `quick_check.csv` | settings, counts, tag shares; recall of the true S1 per slice |
-| `faiss/s1_buckets.parquet`, `faiss/s1_buckets_exact.parquet`, `faiss/s1_buckets_ivfpq.parquet` | top-k buckets from exact search and (optionally) FAISS IVF-PQ |
-| `faiss/index_<country>.faiss`, `faiss/mean_<country>.npy` | the IVF-PQ index and the centering mean (IVF-PQ mode only) |
-| `faiss/bucket_recall.csv`, `faiss/metric_f05.csv` | true matches in the buckets; F0.5 table for simple rules |
-| `faiss/s1_buckets_all.parquet`, `faiss/extra_recall.csv` | (with `EXTRA_SEARCHES`) e5 top-30 + every extra search in 02 full's bucket format, for 03 (sample) with `BUCKETS=all` / `sub2`; e5 top-k vs e5 top-30 + each search (pairs per S1, true matches inside, ceiling) |
-
-### `lgbm_matcher/<model>/<sample>/`, written by `03_lightgbm_matcher.ipynb`
-
-One folder per sample it was trained on (plus `_max<N>` when `MAX_S1` limits the S1, and `_all` / `_sub2` for
-those `BUCKETS`; `BUCKETS=e5` keeps the plain name).
-
-| File | Content |
-|---|---|
-| `lgbm_matcher.txt`, `matcher_config.json` | model and settings trained on the sample buckets (44 features, 51 with `BUCKETS=all` / `sub2`), candidates per S1 |
-| `oof_pairs.parquet`, `metric_f05.csv`, `feature_importance.csv` | out-of-fold predictions, score table, importance |
-| `sample_matching_results.tsv` | out-of-fold matches of the sampled S1, in the submission format |
+A model from 02b or 02c is used by pointing 02 full at it (`E5_MODELS=<folder>`). Its buckets then go to
+`embeddings_full/<folder name>/` (`e5-small-er/`, `er-embed-small/`) instead of `multilingual-e5-small/`.
 
 ---
 

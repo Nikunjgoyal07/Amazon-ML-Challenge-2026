@@ -21,7 +21,7 @@
 
 ## 📌 What is this?
 
-**Submission-3 is the transliteration-upgrade experiment track**: Indian-script names are the search stage's weakest slice (17% of true matches missed vs 4% for Latin script), so this folder tests a **hybrid transliteration engine** — IndicXlit for native-script tokens, anyascii for Latin/French — behind strict acceptance gates, plus **anchored dev sampling** so recall numbers are honest. No leaderboard score is claimed here; winners graduate into the main pipeline (see `docs/hybridplanner.md`).
+**Submission-3 is the transliteration-upgrade experiment track**: Indian-script names are the search stage's weakest slice (17% of true matches missed vs 4% for Latin script), so this folder tests a **hybrid transliteration engine** — IndicXlit for native-script tokens, anyascii for Latin/French — behind strict acceptance gates, plus **anchored dev sampling** so recall numbers are honest. No leaderboard score is claimed here; winners graduate into the main pipeline (see `docs/research/INDICXLIT_PLAN.md`).
 
 | Item | Detail |
 |---|---|
@@ -83,7 +83,7 @@ XLIT_DIR=/path/to/indicxlit-assets  # unset/empty => hybrid disabled, nothing ch
 ## 🧭 Where it fits
 
 * Builds on **submission-2**'s pipeline (anyascii transliteration + word map).
-* Successor ideas live in `docs/hybridplanner.md`; the from-scratch tokenizer of **submission-5** ultimately attacks the same weakness from the model side.
+* Successor ideas live in `docs/research/INDICXLIT_PLAN.md`; the from-scratch tokenizer of **submission-5** ultimately attacks the same weakness from the model side.
 
 ---
 

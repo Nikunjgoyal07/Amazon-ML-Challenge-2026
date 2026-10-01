@@ -71,6 +71,7 @@ flowchart TB
 | [`03_full_lightgbm_submission.ipynb`](03_full_lightgbm_submission.ipynb) | 03 · full | 85 features, train 200k S1/country → CV + cutoff → predict → validate (~3–4 h CPU) |
 | [`04_rethreshold.ipynb`](04_rethreshold.ipynb) | 04 · tune | New per-country cutoffs from saved probabilities (minutes) |
 | [`02_e5_embeddings.ipynb`](02_e5_embeddings.ipynb) | 02 · sample | Experiment twin: IVF-PQ vs exact, model bake-offs (`small,base,large`), `SAMPLE_SIZE` in one place |
+| [`run_sample_experiment.ipynb`](run_sample_experiment.ipynb) | 01-03 · sample | Driver that ran 01 → 02_full → 03_full on one sample to compare v3 with submission 2 (moved here from the repo root) |
 | [`03_lightgbm_matcher.ipynb`](03_lightgbm_matcher.ipynb) | 03 · sample | Experiment twin: 44+7 features, `BUCKETS=all/sub2/e5` comparisons, `show_s1()` viewer, transfer check |
 
 Sample twins are for experiments only — never for a submission (small-sample scores mislead: 0.974 vs 0.946 real).
@@ -95,13 +96,13 @@ OOM? lower `TRAIN_S1_PER_COUNTRY`/`PAIRS_PER_CHUNK`; too slow? `CANDIDATES_PER_S
 |---|---|---|
 | v1 | 44 feat, 20 cand | public **0.935** |
 | v2 | transliteration + street/rarity/frequency, 30 cand | test bed 0.943 → **0.967** |
-| **v3 (here)** | +2 searches, word map, typo + c-vs-c features | ceiling **0.974**; CV ≈ 0.96 expected |
+| **v3 (here)** | +2 searches, word map, typo + c-vs-c features | public **0.967** (France cutoff 0.9); CV 0.9796 (India 0.9766, US 0.9826) |
 
-Design docs: `docs/ARCHITECTURE.md` (method) · `docs/SUBMISSION_STEPS.md` (runbook) · `docs/RESULTS_EXPLAINED.md` (reading the tables) · `docs/DATA_AND_OUTPUTS.md` (every artifact).
+Design docs: `docs/SOLUTION_WRITEUP.md` (method) · `docs/pipeline/` (code, notebook by notebook) · `docs/SUBMISSION_STEPS.md` (runbook) · `docs/RESULTS_EXPLAINED.md` (reading the tables) · `docs/DATA_AND_OUTPUTS.md` (every artifact).
 
 ## 🧭 Limits
 
-* France ≈ 0.88, never seen in training (cross-country check loses 0.04–0.06) — leaderboard cutoff tuning is the remaining lever.
+* France ≈ 0.90 (derived from the final leaderboard score), never seen in training (cross-country check loses 0.04–0.06) — leaderboard cutoff tuning is the remaining lever.
 * India's search still misses some empty-address / random-word renames — the next retriever upgrade is **submission-5**'s custom `er-embed-small`.
 
 ---

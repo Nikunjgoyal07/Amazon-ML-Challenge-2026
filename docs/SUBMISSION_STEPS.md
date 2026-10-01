@@ -10,19 +10,15 @@ files, validate them on your computer, and upload `matching_results.tsv` to the 
 04_rethreshold.ipynb   (optional)              →  rethreshold/          same matches with another France cutoff
 ```
 
-How it works: [ARCHITECTURE.md](ARCHITECTURE.md). What each output contains:
-[DATA_AND_OUTPUTS.md](DATA_AND_OUTPUTS.md).
+The four notebooks are in [`submission-4/`](../submission-4/). How it works: [SOLUTION_WRITEUP.md](SOLUTION_WRITEUP.md),
+and notebook by notebook in [pipeline/](pipeline/).
+What each output contains: [DATA_AND_OUTPUTS.md](DATA_AND_OUTPUTS.md).
 
 ## Versions
 
-| Version | What changed | Score |
-|---|---|---|
-| 1 (first submission) | 44 features, 20 candidates per S1 | public leaderboard **0.935** (India 0.921, US 0.970 in cross-validation; France ≈ 0.88) |
-| 2 | Indian-script text transliterated before embedding (02); 13 new comparisons: street, word rarity, name frequency (03); 30 candidates per S1 | local test bed 0.943 → **0.967** for India + US; expected leaderboard **~0.95** (estimate) |
-| **3 (current notebooks)** | extra candidates from a reverse search, an address key and a name 3-gram search (02); 4 "found by" features (03); two transliteration fixes and a learned word map for Indian-script names (02, 03); 8 typo-tolerant word-rarity features and 13 candidate-vs-candidate features (03) | test bed: India recall 91.4% → 93.3%, ceiling 0.967 → 0.974 (address + name searches); typo features 0.9667 → 0.9675; candidate-vs-candidate: cross-country 0.8761 → 0.8789; final score not measured yet |
-
-Version 3 needs **02 (full) and 03 (full) re-run**. 01's output can be reused. To compare with
-version 2 in the same run, 03 can ignore the extra candidates (`USE_EXTRA_CANDIDATES=false`).
+The current notebooks are the **final pipeline**: public leaderboard **0.967** with
+`COUNTRY_THRESHOLDS = {"France": 0.9}` in 03; cross-validation 0.9796 on India + US. Earlier submissions
+(0.935, 0.960) and what changed between them: [SOLUTION_WRITEUP.md §1 and §10](SOLUTION_WRITEUP.md).
 
 ---
 
@@ -73,8 +69,8 @@ version 1 did), reuse it and skip this step.
     for ~2 pairs per S1.
   - India's "... Indian-script candidates" vs "... Latin-script candidates": on the test bed, 17% of
     Indian-script true matches were missing from the buckets vs 4% for Latin script. If the gap is
-    still large at full size, a better transliteration (e.g. the IndicXlit plan in
-    `docs/hybridplanner.md`) is the next thing to test.
+    still large at full size, a better transliteration is the obvious next step. IndicXlit was tried
+    and did not help ([experiments/INDICXLIT.md](experiments/INDICXLIT.md)).
 
 ## Step 3: 03_full_lightgbm_submission.ipynb
 
@@ -146,7 +142,7 @@ The zip needs:
 - `code/business_entity_resolution/` with the notebooks (`src/`), a README and requirements
 - the filled-in `Documentation_template.md`
 
-`docs/ARCHITECTURE.md` covers most of what the template asks for.
+[SOLUTION_WRITEUP.md](SOLUTION_WRITEUP.md) covers most of what the template asks for.
 
 ---
 

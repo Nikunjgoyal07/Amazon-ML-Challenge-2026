@@ -12,7 +12,7 @@
 ![PyTorch](https://img.shields.io/badge/PyTorch-2.14-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)
 ![e5-small](https://img.shields.io/badge/multilingual--e5--small-MIT-8A2BE2?style=for-the-badge)
 ![LightGBM](https://img.shields.io/badge/LightGBM-4.7-6AA84F?style=for-the-badge)
-![F0.5](https://img.shields.io/badge/Public_F0.5-0.935-gold?style=for-the-badge)
+![F0.5](https://img.shields.io/badge/Public_F0.5-0.960-gold?style=for-the-badge)
 ![T4 x2](https://img.shields.io/badge/Kaggle-GPU_T4_x2-76B900?style=for-the-badge&logo=nvidia&logoColor=white)
 
 [![Skill Icons](https://skillicons.dev/icons?i=python,pytorch,git&theme=light)](https://skillicons.dev)
@@ -25,7 +25,7 @@
 
 | Item | Detail |
 |---|---|
-| 🏆 Public score | **F0.5 = 0.935** (CV: India 0.921 · US 0.970 · France ≈ 0.88) |
+| 🏆 Public score | **F0.5 = 0.960** (0.96004; the earlier 44-feature e5 run scored 0.935) |
 | 🔍 Retrieval | e5-small, top-30/S1 + reverse + address-key + name 3-gram searches |
 | 🌲 Matcher | LightGBM, **61 features**, 3-fold S1-grouped CV, cutoff t = 0.70 |
 | 📝 Text | `name_norm \| addr_norm`, Indian scripts transliterated via anyascii |
